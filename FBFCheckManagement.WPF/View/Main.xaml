@@ -1,0 +1,34 @@
+﻿<Window x:Class="FBFCheckManagement.WPF.View.Main"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Height="374.326" Width="457.811" Loaded="Window_Loaded_1"
+        WindowStartupLocation="CenterScreen"
+        Title="Check Manager">
+    <Grid Background="LightGray" Margin="0,0,0,-1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid HorizontalAlignment="Left" Height="157" Margin="45,95,0,0" VerticalAlignment="Top" Width="366" Background="WhiteSmoke">
+            <Button Name="CheckButton" HorizontalAlignment="Left" Margin="20,14,0,0" VerticalAlignment="Top" Width="75" Click="CheckButton_Click">
+                <Grid>
+                    <Image  Name="CheckImage" HorizontalAlignment="Left" Height="75" VerticalAlignment="Top" Width="75" Margin="0,0,-1,0"/>
+                </Grid>
+            </Button>
+            <TextBlock HorizontalAlignment="Left" Margin="43,95,0,0" TextWrapping="Wrap" Text="Check" VerticalAlignment="Top"/>
+            <Button Name="BankButton" HorizontalAlignment="Left" Margin="130,15,0,0" VerticalAlignment="Top" Width="75" Click="BankButton_Click">
+                <Grid>
+                    <Image Name="BankImage" HorizontalAlignment="Left" Height="75" VerticalAlignment="Top" Width="75"/>
+                </Grid>
+            </Button>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Bank" VerticalAlignment="Top" Margin="153,96,0,0"/>
+            <Button Name="CheckAmountsButton" HorizontalAlignment="Left" Margin="238,15,0,0" VerticalAlignment="Top" Width="75" Click="CheckAmountsButton_Click">
+                <Grid>
+                    <Image Name="CheckAmountsImage" HorizontalAlignment="Left" Height="75" VerticalAlignment="Top" Width="75"/>
+                </Grid>
+            </Button>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Check Amounts" VerticalAlignment="Top" Margin="238,96,0,0"/>
+
+        </Grid>
+    </Grid>
+</Window>

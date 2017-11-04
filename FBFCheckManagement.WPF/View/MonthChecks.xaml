@@ -1,0 +1,109 @@
+﻿<Window x:Class="FBFCheckManagement.WPF.View.MonthChecks"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
+        xmlns:helperClass="clr-namespace:FBFCheckManagement.WPF.HelperClass"
+        Title="MonthChecks" Height="525.525" Width="797.202"
+        Loaded="MonthChecks_OnLoaded" ContentRendered="MonthChecks_OnContentRendered"
+        WindowState="Maximized">
+
+    <Window.Resources>
+
+        <telerik:OrientedAppointmentItemStyleSelector  x:Key="AppointmentItemStyleSelector">
+            <telerik:OrientedAppointmentItemStyleSelector.MonthViewStyle>
+                <Style TargetType="telerik:AppointmentItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                    <Setter Property="Background"  Value="{Binding Appointment.BackColor}"/>
+                </Style>
+            </telerik:OrientedAppointmentItemStyleSelector.MonthViewStyle>
+        </telerik:OrientedAppointmentItemStyleSelector>
+
+        <telerik:OrientedGroupHeaderStyleSelector x:Key="GroupHeaderStyleSelector">
+            <telerik:OrientedGroupHeaderStyleSelector.MonthViewBottomLevelWeekGroupStyle>
+                <Style TargetType="telerik:GroupHeader" BasedOn="{StaticResource MonthViewBottomLevelWeekGroupStyle}">
+                    <Setter Property="IsExpanded" Value="True" />
+                </Style>
+            </telerik:OrientedGroupHeaderStyleSelector.MonthViewBottomLevelWeekGroupStyle>
+        </telerik:OrientedGroupHeaderStyleSelector>
+        
+    </Window.Resources>
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <telerik:RadScheduleView Name="ScheduleView" ShowDialog="ScheduleView_OnShowDialog"
+                                         VisibleRangeChanged="ScheduleView_VisibleRangeChanged" GroupHeaderStyleSelector="{StaticResource GroupHeaderStyleSelector}"
+                    AppointmentStyleSelector="{StaticResource AppointmentItemStyleSelector}" Margin="0,0,10,10">
+            <telerik:RadScheduleView.ViewDefinitions>
+                <telerik:MonthViewDefinition VisibleDays="35" />
+            </telerik:RadScheduleView.ViewDefinitions>
+            <telerik:RadScheduleView.DragDropBehavior>
+                <helperClass:ScheduleDragBehavior/>
+            </telerik:RadScheduleView.DragDropBehavior>
+        </telerik:RadScheduleView>
+
+        <TextBlock HorizontalAlignment="Left" Margin="112,6,0,0" Background="LightGreen" 
+                   VerticalAlignment="Top" Width="30" Height="21"/>
+        <TextBlock HorizontalAlignment="Left" Margin="157,8,0,0" TextWrapping="Wrap" Foreground="Beige"
+                   Text="Funded" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="218,6,0,0" Background="Pink"
+                   VerticalAlignment="Top" Width="30" Height="21"/>
+        <TextBlock HorizontalAlignment="Left" Margin="262,8,0,0" TextWrapping="Wrap" Foreground="Beige"
+                   Text="On-Hold" VerticalAlignment="Top"/>
+
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+        <GroupBox Header="Amounts" Grid.Column="2" Margin="10">
+            <Grid>
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,27,0,0" VerticalAlignment="Top" Width="233">
+                    <TabItem Header="1st Week">
+                        <Grid Background="#FFE5E5E5">
+                            <TextBlock Name="Week1" Foreground="Black" TextAlignment="Right" FontSize="20" 
+                                       HorizontalAlignment="Right" Margin="10,9,14,0" TextWrapping="Wrap" Text="Php 0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,154,0,0" VerticalAlignment="Top" Width="233">
+                    <TabItem Header="2nd Week">
+                        <Grid Background="#FFE5E5E5">
+                            <TextBlock Name="Week2" Foreground="Black" TextAlignment="Right" FontSize="20" 
+                                       HorizontalAlignment="Right" Margin="10,9,14,0" TextWrapping="Wrap" Text="Php 0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,281,0,0" VerticalAlignment="Top" Width="233">
+                    <TabItem Header="3rd Week">
+                        <Grid Background="#FFE5E5E5">
+                            <TextBlock Name="Week3" Foreground="Black" TextAlignment="Right" FontSize="20" 
+                                       HorizontalAlignment="Right" Margin="10,9,14,0" TextWrapping="Wrap" Text="Php 0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,408,0,0" VerticalAlignment="Top" Width="233">
+                    <TabItem Header="4th Week">
+                        <Grid Background="#FFE5E5E5">
+                            <TextBlock Name="Week4" Foreground="Black" TextAlignment="Right" FontSize="20" 
+                                       HorizontalAlignment="Right" Margin="10,9,14,0" TextWrapping="Wrap" Text="Php 0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,535,0,0" VerticalAlignment="Top" Width="233">
+                    <TabItem Header="5th Week">
+                        <Grid Background="#FFE5E5E5">
+                            <TextBlock Name="Week5" Foreground="Black" TextAlignment="Right" FontSize="20" 
+                                       HorizontalAlignment="Right" Margin="10,9,14,0" TextWrapping="Wrap" Text="Php 0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>
