@@ -51,7 +51,12 @@ namespace FBFCheckManagement.Infrastructure.Repository
 
         public List<Check> GetChecksByMonth(int year, int month){
             return
-                _context.Checks.Where(c => c.DateIssued.Value.Year == year && c.DateIssued.Value.Month == month)
+                _context.Checks.Where(
+                    c =>
+                        (c.DateIssued.HasValue && c.HoldDate.HasValue == false && c.DateIssued.Value.Year == year &&
+                         c.DateIssued.Value.Month == month)
+                        ||
+                        (c.HoldDate.HasValue && c.HoldDate.Value.Year == year && c.HoldDate.Value.Month == month))
                     .ToList();
         }
 

@@ -97,8 +97,6 @@
     <Compile Include="HelperClass\DecimalAmountToPhp.cs" />
     <Compile Include="HelperClass\ImageToBitmap.cs" />
     <Compile Include="HelperClass\ScheduleDragBehavior.cs" />
-    <Compile Include="HelperClass\TestBankRepository.cs" />
-    <Compile Include="HelperClass\TestCheckRepository.cs" />
     <Compile Include="HelperClass\WeekRange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
