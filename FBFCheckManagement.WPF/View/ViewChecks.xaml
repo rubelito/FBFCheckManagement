@@ -2,41 +2,47 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converters="clr-namespace:FBFCheckManagement.WPF.Converters"
-        Title="Checks Details" Height="267.819" Width="482.406" ContentRendered="ViewChecks_OnContentRendered"
+        Title="Checks Details" Height="341.819" Width="543.406" ContentRendered="ViewChecks_OnContentRendered"
         WindowStartupLocation="CenterScreen" WindowStyle="None">
     <Window.Resources>
         <converters:DateToStringConverter x:Key="DateToStringConverter" />
     </Window.Resources>
-    
+
     <Grid Background="LightGray" Margin="0,0,0,2">
-        <GroupBox  Header="Details" Background="WhiteSmoke" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="189" Width="450">
+        <GroupBox  Header="Details" Background="WhiteSmoke" Margin="10,10,10,0" VerticalAlignment="Top" Height="263">
             <Grid Margin="-10,0,-2,0">
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="ID :" VerticalAlignment="Top" Margin="40,15,0,0"/>
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="{Binding Path=Id}" VerticalAlignment="Top" Margin="63,15,0,0" Width="48"/>
 
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Check # :" VerticalAlignment="Top" Margin="10,43,0,0" />
                 <TextBlock HorizontalAlignment="Left"  Text="{Binding Path=CheckNumber, Mode=OneWay}" VerticalAlignment="Top" Margin="64,43,0,0" />
-                
+
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Bank :" VerticalAlignment="Top" Margin="26,74,0,0" />
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="{Binding Path=Bank.BankName, Mode=OneWay}" VerticalAlignment="Top" Margin="64,74,0,0" />
 
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Amount :" VerticalAlignment="Top" Margin="10,104,0,0" />
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="{Binding Path=Amount, StringFormat={}{0:#,#.00}, Mode=OneWay}" VerticalAlignment="Top" Margin="62,104,0,0" />
-                
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Issued To :" VerticalAlignment="Top" Margin="257,43,0,0" />
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="{Binding Path=IssuedTo, Mode=OneWay}" VerticalAlignment="Top" Margin="318,43,0,0" />
 
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Issued Date :" VerticalAlignment="Top" Margin="245,74,0,0" />
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="{Binding Path=DateIssued, Converter={StaticResource DateToStringConverter}}" VerticalAlignment="Top" Margin="318,74,0,0" />
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Notes :" VerticalAlignment="Top" Margin="20,129,0,0" />
+                <TextBox Name="NotesText" Text="{Binding Path=Notes, Mode=OneWay}" AcceptsReturn="True" HorizontalScrollBarVisibility="Hidden"
+                        VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Height="102" TextWrapping="Wrap" VerticalAlignment="Top" Margin="64,129,0,0" Width="207"/>
 
-                <CheckBox Name="IsOnHold" IsChecked="{Binding Path=IsOnHold, Mode=OneWay}" Content="On-hold Date :" Margin="213,104,137,30"/>
-                <DatePicker Name="OnHoldDatePicker" SelectedDate="{Binding Path=HoldDate, Mode=OneWay}" IsEnabled="{Binding ElementName=IsOnHold, Path=IsChecked}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="318,100,0,0" Width="120"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Issued To :" VerticalAlignment="Top" Margin="320,43,0,0" />
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="{Binding Path=IssuedTo, Mode=OneWay}" VerticalAlignment="Top" Margin="381,43,0,0" />
 
-                <CheckBox Name="IsFunded" IsChecked="{Binding Path=IsFunded, Mode=OneWay}" Content="Funded ?" Margin="213,135,164,10"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Issued Date :" VerticalAlignment="Top" Margin="308,74,0,0" />
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="{Binding Path=DateIssued, Converter={StaticResource DateToStringConverter}}" VerticalAlignment="Top" Margin="381,74,0,0" />
+
+                <CheckBox Name="IsOnHold" IsChecked="{Binding Path=IsOnHold, Mode=OneWay}" Content="On-hold Date :" Margin="276,104,74,117"/>
+                <DatePicker Name="OnHoldDatePicker" SelectedDate="{Binding Path=HoldDate, Mode=OneWay}" IsEnabled="{Binding ElementName=IsOnHold, Path=IsChecked}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="381,100,0,0" Width="120"/>
+
+                <CheckBox Name="IsFunded" IsChecked="{Binding Path=IsFunded, Mode=OneWay}" Content="Funded ?" Margin="276,135,101,89"/>
+
+                <CheckBox Name="IsSettled" IsChecked="{Binding Path=IsSettled, Mode=OneWay}" Content="Settled ?" Margin="276,166,101,58" Checked="IsSettled_OnChecked"/>
             </Grid>
         </GroupBox>
 
-        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="278,216,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="SaveButton_OnClick"/>
-        <Button x:Name="CloseButton" Content="Close" HorizontalAlignment="Left" Margin="368,216,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="CloseButton_OnClick"/>
+        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="354,289,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="SaveButton_OnClick"/>
+        <Button x:Name="CloseButton" Content="Close" HorizontalAlignment="Left" Margin="450,289,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="CloseButton_OnClick"/>
     </Grid>
 </Window>

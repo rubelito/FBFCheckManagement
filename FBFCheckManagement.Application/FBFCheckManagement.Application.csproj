@@ -42,13 +42,20 @@
   <ItemGroup>
     <Compile Include="Domain\Bank.cs" />
     <Compile Include="Domain\Check.cs" />
+    <Compile Include="DTO\CheckFlag.cs" />
     <Compile Include="DTO\CheckPagingRequest.cs" />
     <Compile Include="DTO\CheckPagingResult.cs" />
+    <Compile Include="DTO\DateRange.cs" />
     <Compile Include="DTO\Order.cs" />
     <Compile Include="DTO\OrderBy.cs" />
     <Compile Include="DTO\SearchCriteria.cs" />
     <Compile Include="Helper\DateHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report\BankSection.cs" />
+    <Compile Include="Report\ReportGenerator.cs" />
+    <Compile Include="Report\DailyReportModel.cs" />
+    <Compile Include="Report\ReportParameter.cs" />
+    <Compile Include="Report\WeekReportModel.cs" />
     <Compile Include="Repository\IBankRepository.cs" />
     <Compile Include="Repository\ICheckRepository.cs" />
     <Compile Include="Service\CheckService.cs" />

@@ -61,6 +61,36 @@ namespace FBFCheckManagement.Application.Service
             DateTime firstDayOfTheWeek = dayWithinAWeek.GetFirstDayOfWeek();
             DateTime lastDayOfTheWeek = dayWithinAWeek.GetLastDayOfWeek();
 
+            var checksWithinThisWeek = GetChecksByWeekRange(firstDayOfTheWeek, lastDayOfTheWeek, checks);
+
+            foreach (var c in checksWithinThisWeek){
+                total = total + c.Amount;
+            }
+
+            return total;
+        }
+
+        public decimal ComputeRemainingAmountInTheWeek(DateTime dayWithinAWeek, List<Check> checks){
+
+            decimal totalAmount = ComputeChecksTotalInTheWeek(dayWithinAWeek, checks);
+            decimal amountToSubtract = 0;
+
+            DateTime firstDayOfTheWeek = dayWithinAWeek.GetFirstDayOfWeek();
+            DateTime lastDayOfTheWeek = dayWithinAWeek.GetLastDayOfWeek();
+
+            var settledChecks =
+                GetChecksByWeekRange(firstDayOfTheWeek, lastDayOfTheWeek, checks).Where(c => c.IsSettled).ToList();
+
+            foreach (var c in settledChecks)
+            {
+                amountToSubtract = amountToSubtract + c.Amount;
+            }
+
+            decimal amountRemaining = totalAmount - amountToSubtract;
+            return amountRemaining;
+        }
+
+        private IEnumerable<Check> GetChecksByWeekRange(DateTime firstDayOfTheWeek, DateTime lastDayOfTheWeek, List<Check> checks){
             var checksWithinThisWeek = checks.Where(
                 c =>
                     (c.DateIssued.HasValue && c.DateIssued.Value >= firstDayOfTheWeek &&
@@ -76,11 +106,7 @@ namespace FBFCheckManagement.Application.Service
 
             checksWithinThisWeek.AddRange(onHoldChecksWithinThisWeek);
 
-            foreach (var c in checksWithinThisWeek){
-                total = total + c.Amount;
-            }
-
-            return total;
+            return checksWithinThisWeek;
         }
 
         public CheckPagingResult SearchWithPagination(CheckPagingRequest r){

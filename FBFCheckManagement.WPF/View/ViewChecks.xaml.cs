@@ -19,7 +19,7 @@ namespace FBFCheckManagement.WPF.View
     /// <summary>
     /// Interaction logic for ViewChecks.xaml
     /// </summary>
-    public partial class ViewChecks : Window
+    public partial class ViewChecks
     {
         private readonly Check _check;
         private readonly ICheckRepository _checkRepository;
@@ -46,9 +46,12 @@ namespace FBFCheckManagement.WPF.View
             DateTime? onHoldDate = GetOnHoldDate();
 
             bool isFunded = IsFunded.IsChecked.HasValue && IsFunded.IsChecked.Value;
+            bool isSettled = IsSettled.IsChecked.HasValue && IsSettled.IsChecked.Value;
 
             _check.HoldDate = onHoldDate;
             _check.IsFunded = isFunded;
+            _check.IsSettled = isSettled;
+            _check.Notes = NotesText.Text;
 
             _checkRepository.Update(_check);
 
@@ -67,6 +70,10 @@ namespace FBFCheckManagement.WPF.View
             }
 
             return onHoldDate;
+        }
+
+        private void IsSettled_OnChecked(object sender, RoutedEventArgs e){
+            IsFunded.IsChecked = true;
         }
     }
 }

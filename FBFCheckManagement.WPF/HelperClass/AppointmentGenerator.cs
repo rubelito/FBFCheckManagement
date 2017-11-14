@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
 using FBFCheckManagement.Application.Domain;
-using FBFCheckManagement.Application.Repository;
-using FBFCheckManagement.Application.Service;
 using Telerik.Windows.Controls.ScheduleView;
 
 namespace FBFCheckManagement.WPF.HelperClass
@@ -20,11 +16,13 @@ namespace FBFCheckManagement.WPF.HelperClass
                 AppointmentCheck a = new AppointmentCheck();
 
                 a.Id = c.Id;
-                a.IsFunded = c.IsFunded;
                 a.IsOnHold = c.HoldDate.HasValue;
+                a.IsFunded = c.IsFunded;               
+                a.IsSettled = c.IsSettled;
                 a.Start = c.HoldDate.HasValue ? c.HoldDate.Value : c.DateIssued.Value;
-                a.Subject = DecimalAmountToPhp.ConvertToPhp(c.Amount);
-
+                a.Subject = c.Bank.BankName + "- " + DecimalAmountToPhp.ConvertToCurrency(c.Amount);
+                a.Notes = c.Notes;
+                
                 a.End = a.Start.AddHours(1);
 
                 appointments.Add(a);
@@ -39,16 +37,48 @@ namespace FBFCheckManagement.WPF.HelperClass
         public long Id { get; set; }
         public bool IsFunded { get; set; }
         public bool IsOnHold { get; set; }
+        public bool IsSettled { get; set; }
+        public string Notes { get; set; }
+
+        public string ToolTip{
+            get{
+                if (string.IsNullOrEmpty(Notes))
+                    return this.Subject;
+                
+                    return Notes;               
+            }
+        }
+
+        public FontStyle FontStyle{
+            get{
+                if (string.IsNullOrEmpty(Notes))
+                    return FontStyles.Normal;
+
+                return FontStyles.Oblique;
+            }
+        }
+
+        public FontWeight FontWeight{
+            get{
+                if (string.IsNullOrEmpty(Notes))
+                    return FontWeights.Regular;
+
+                return FontWeights.Bold;
+            }
+        }
 
         public SolidColorBrush BackColor {
             get{
-                SolidColorBrush color = null;
+                SolidColorBrush color;
 
-                if (IsFunded){
+                if (IsSettled){
                     color = new SolidColorBrush(Colors.LightGreen);
                 }
+                else if (IsFunded){
+                    color = new SolidColorBrush(Colors.Orange);
+                }
                 else if (IsOnHold){
-                    color = new SolidColorBrush(Colors.Pink);
+                    color = new SolidColorBrush(Colors.OrangeRed);
                 }
                 else{
                     color = new SolidColorBrush(Colors.LightBlue);

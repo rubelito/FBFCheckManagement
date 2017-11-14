@@ -11,9 +11,10 @@ namespace FBFCheckManagement.Application.Repository
         void Update(Check check);
         void Delete(long id);
         Check GetCheckById(long id);
-        List<Check> GetChecksByMonth(int year, int month);
+        List<Check> GetChecksByMonth(YearMonthInfo paramInfo);
         Check GetCheckByNumber(string checkNumber);
         List<Check> GetChecksByDateRange(DateTime from, DateTime to);
-        CheckPagingResult GetCheckWithPaging(CheckPagingRequest request);
+        List<Check> GetChecksByDateRangeWithBankId(DateTime from, DateTime to, long bankId);
+        CheckPagingResult GetCheckWithPaging(CheckPagingRequest request);     
     }
 }

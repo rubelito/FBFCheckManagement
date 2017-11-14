@@ -3,39 +3,58 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
         xmlns:helperClass="clr-namespace:FBFCheckManagement.WPF.HelperClass"
+        xmlns:dto="clr-namespace:FBFCheckManagement.Application.DTO;assembly=FBFCheckManagement.Application"
         Title="MonthChecks" Height="525.525" Width="797.202"
         Loaded="MonthChecks_OnLoaded" ContentRendered="MonthChecks_OnContentRendered"
         WindowState="Maximized">
 
     <Window.Resources>
-
+        <ResourceDictionary>
+            <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type dto:CheckFlag}"
+                        x:Key="CheckFlagProvider">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="dto:CheckFlag" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+           
         <telerik:OrientedAppointmentItemStyleSelector  x:Key="AppointmentItemStyleSelector">
             <telerik:OrientedAppointmentItemStyleSelector.MonthViewStyle>
                 <Style TargetType="telerik:AppointmentItem">
                     <Setter Property="HorizontalContentAlignment" Value="Right"/>
                     <Setter Property="Background"  Value="{Binding Appointment.BackColor}"/>
+                    <Setter Property="FontStyle" Value="{Binding Appointment.FontStyle}" />
+                    <Setter Property="FontWeight" Value="{Binding Appointment.FontWeight}" />
+                    <Setter Property="FontSize" Value="11.5" />
                 </Style>
             </telerik:OrientedAppointmentItemStyleSelector.MonthViewStyle>
         </telerik:OrientedAppointmentItemStyleSelector>
 
         <telerik:OrientedGroupHeaderStyleSelector x:Key="GroupHeaderStyleSelector">
+                
             <telerik:OrientedGroupHeaderStyleSelector.MonthViewBottomLevelWeekGroupStyle>
                 <Style TargetType="telerik:GroupHeader" BasedOn="{StaticResource MonthViewBottomLevelWeekGroupStyle}">
-                    <Setter Property="IsExpanded" Value="True" />
+                    <Setter Property="IsExpanded" Value="True" />                  
                 </Style>
             </telerik:OrientedGroupHeaderStyleSelector.MonthViewBottomLevelWeekGroupStyle>
         </telerik:OrientedGroupHeaderStyleSelector>
-        
+
+            <DataTemplate x:Key="ToolTipTemplate">
+                <Grid>
+                    <TextBlock Text="{Binding Appointment.ToolTip}" Width="207" 
+                               TextWrapping="WrapWithOverflow" />
+                </Grid>
+            </DataTemplate>
+
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*" />
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        <telerik:RadScheduleView Name="ScheduleView" ShowDialog="ScheduleView_OnShowDialog"
+        <telerik:RadScheduleView Name="ScheduleView" ShowDialog="ScheduleView_OnShowDialog" SelectedSlot="{Binding Path=SelectedDaySlot, Mode=TwoWay}" ToolTipTemplate="{StaticResource ToolTipTemplate}" 
                                          VisibleRangeChanged="ScheduleView_VisibleRangeChanged" GroupHeaderStyleSelector="{StaticResource GroupHeaderStyleSelector}"
                     AppointmentStyleSelector="{StaticResource AppointmentItemStyleSelector}" Margin="0,0,10,10">
             <telerik:RadScheduleView.ViewDefinitions>
@@ -46,19 +65,28 @@
             </telerik:RadScheduleView.DragDropBehavior>
         </telerik:RadScheduleView>
 
-        <TextBlock HorizontalAlignment="Left" Margin="112,6,0,0" Background="LightGreen" 
-                   VerticalAlignment="Top" Width="30" Height="21"/>
-        <TextBlock HorizontalAlignment="Left" Margin="157,8,0,0" TextWrapping="Wrap" Foreground="Beige"
-                   Text="Funded" VerticalAlignment="Top"/>
-        <TextBlock HorizontalAlignment="Left" Margin="218,6,0,0" Background="Pink"
-                   VerticalAlignment="Top" Width="30" Height="21"/>
-        <TextBlock HorizontalAlignment="Left" Margin="262,8,0,0" TextWrapping="Wrap" Foreground="Beige"
-                   Text="On-Hold" VerticalAlignment="Top"/>
+        <ComboBox Name="BankComboBox"
+					IsSynchronizedWithCurrentItem="True" DisplayMemberPath="BankName" HorizontalAlignment="Left" Margin="4,3,0,0" VerticalAlignment="Top" Width="120"
+                  SelectionChanged="BankComboBox_OnSelectionChanged" DropDownOpened="BankComboBox_OnDropDownOpened"/>
+
+        <ComboBox Name="CheckStatusComboBox" ItemsSource="{Binding Source={StaticResource CheckFlagProvider}}"
+				  SelectionChanged="CheckStatusComboBox_OnSelectionChanged" DropDownOpened="CheckStatusComboBox_OnDropDownOpened"
+                  SelectedIndex="0" HorizontalAlignment="Left" Margin="131,3,0,0" VerticalAlignment="Top" Width="120"/>
+        
+        <Button x:Name="PrintDailyButton" Content="Daily" HorizontalAlignment="Left" 
+                Margin="293,3,0,0" VerticalAlignment="Top" Width="75" Height="23"
+                IsEnabled="{Binding Path=SelectedDaySlot, TargetNullValue=False}"
+                Click="PrintDailyButton_OnClick" />
+
+        <Button x:Name="WeeklyDailyButton" Content="Weekly" HorizontalAlignment="Left" 
+                Margin="375,3,0,0" VerticalAlignment="Top" Width="75" Height="23"
+                IsEnabled="{Binding Path=SelectedDaySlot, TargetNullValue=False}"
+                Click="WeeklyDailyButton_OnClick"/>
 
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
         <GroupBox Header="Amounts" Grid.Column="2" Margin="10">
             <Grid>
-                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,27,0,0" VerticalAlignment="Top" Width="233">
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,27,0,0" VerticalAlignment="Top" Width="190">
                     <TabItem Header="1st Week">
                         <Grid Background="#FFE5E5E5">
                             <TextBlock Name="Week1" Foreground="Black" TextAlignment="Right" FontSize="20" 
@@ -67,7 +95,7 @@
                     </TabItem>
                 </TabControl>
 
-                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,154,0,0" VerticalAlignment="Top" Width="233">
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,154,0,0" VerticalAlignment="Top" Width="190">
                     <TabItem Header="2nd Week">
                         <Grid Background="#FFE5E5E5">
                             <TextBlock Name="Week2" Foreground="Black" TextAlignment="Right" FontSize="20" 
@@ -76,7 +104,7 @@
                     </TabItem>
                 </TabControl>
 
-                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,281,0,0" VerticalAlignment="Top" Width="233">
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,281,0,0" VerticalAlignment="Top" Width="190">
                     <TabItem Header="3rd Week">
                         <Grid Background="#FFE5E5E5">
                             <TextBlock Name="Week3" Foreground="Black" TextAlignment="Right" FontSize="20" 
@@ -85,7 +113,7 @@
                     </TabItem>
                 </TabControl>
 
-                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,408,0,0" VerticalAlignment="Top" Width="233">
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,408,0,0" VerticalAlignment="Top" Width="190">
                     <TabItem Header="4th Week">
                         <Grid Background="#FFE5E5E5">
                             <TextBlock Name="Week4" Foreground="Black" TextAlignment="Right" FontSize="20" 
@@ -94,7 +122,7 @@
                     </TabItem>
                 </TabControl>
 
-                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,535,0,0" VerticalAlignment="Top" Width="233">
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="10,535,0,0" VerticalAlignment="Top" Width="190">
                     <TabItem Header="5th Week">
                         <Grid Background="#FFE5E5E5">
                             <TextBlock Name="Week5" Foreground="Black" TextAlignment="Right" FontSize="20" 
@@ -103,6 +131,52 @@
                     </TabItem>
                 </TabControl>
 
+                <!--Thi Section is for Remaining-->
+
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="205,27,-133,0" VerticalAlignment="Top" Width="190">
+                    <TabItem Header="For Funding">
+                        <Grid Background="#FFE5E5E5">
+                            <TextBlock Name="WeekRemaining1" Foreground="Black" TextAlignment="Right" FontSize="20" 
+                                       HorizontalAlignment="Right" Margin="10,9,14,0" TextWrapping="Wrap" Text="Php 0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="205,154,-133,0" VerticalAlignment="Top" Width="190">
+                    <TabItem Header="For Funding">
+                        <Grid Background="#FFE5E5E5">
+                            <TextBlock Name="WeekRemaining2" Foreground="Black" TextAlignment="Right" FontSize="20" 
+                                       HorizontalAlignment="Right" Margin="10,9,14,0" TextWrapping="Wrap" Text="Php 0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="205,281,-133,0" VerticalAlignment="Top" Width="190">
+                    <TabItem Header="For Funding">
+                        <Grid Background="#FFE5E5E5">
+                            <TextBlock Name="WeekRemaining3" Foreground="Black" TextAlignment="Right" FontSize="20" 
+                                       HorizontalAlignment="Right" Margin="10,9,14,0" TextWrapping="Wrap" Text="Php 0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="205,408,-133,-32" VerticalAlignment="Top" Width="190">
+                    <TabItem Header="For Funding">
+                        <Grid Background="#FFE5E5E5">
+                            <TextBlock Name="WeekRemaining4" Foreground="Black" TextAlignment="Right" FontSize="20" 
+                                       HorizontalAlignment="Right" Margin="10,9,14,0" TextWrapping="Wrap" Text="Php 0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+                <TabControl HorizontalAlignment="Left" Height="78" Margin="205,535,-133,-159" VerticalAlignment="Top" Width="190">
+                    <TabItem Header="For Funding">
+                        <Grid Background="#FFE5E5E5">
+                            <TextBlock Name="WeekRemaining5" Foreground="Black" TextAlignment="Right" FontSize="20" 
+                                       HorizontalAlignment="Right" Margin="10,9,14,0" TextWrapping="Wrap" Text="Php 0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
             </Grid>
         </GroupBox>
     </Grid>

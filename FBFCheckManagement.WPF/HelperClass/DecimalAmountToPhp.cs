@@ -2,8 +2,8 @@
 {
     public static class DecimalAmountToPhp
     {
-        public static string ConvertToPhp(decimal amounts){
-            return "Php " + string.Format("{0:#,#.00}", amounts);
+        public static string ConvertToCurrency(decimal amounts){
+            return string.Format("{0:#,#.00}", amounts);
         }
     }
 }

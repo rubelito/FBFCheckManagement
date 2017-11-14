@@ -11,7 +11,8 @@
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="{Binding Path=Check.Id}" VerticalAlignment="Top" Margin="63,15,0,0" Width="48"/>
 
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Check # :" VerticalAlignment="Top" Margin="10,43,0,0" />
-                <TextBox Name="CheckNumText" Text="{Binding Path=Check.CheckNumber, Mode=OneWay}"  HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="63,36,0,0" Width="120"/>
+                <TextBox Name="CheckNumText" Text="{Binding Path=Check.CheckNumber, Mode=OneWay}"  
+                         HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="63,36,0,0" Width="120"/>
 
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Bank :" VerticalAlignment="Top" Margin="26,74,0,0" />
                 <ComboBox Name="BankComboBox" ItemsSource="{Binding Banks, Mode=OneWay}" SelectedValue="{Binding Path=Check.Bank, Mode=OneWay}"

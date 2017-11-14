@@ -49,29 +49,72 @@ namespace FBFCheckManagement.Infrastructure.Repository
             return _context.Checks.FirstOrDefault(c => c.Id == id);
         }
 
-        public List<Check> GetChecksByMonth(int year, int month){
-            return
-                _context.Checks.Where(
-                    c =>
-                        (c.DateIssued.HasValue && c.HoldDate.HasValue == false && c.DateIssued.Value.Year == year &&
-                         c.DateIssued.Value.Month == month)
-                        ||
-                        (c.HoldDate.HasValue && c.HoldDate.Value.Year == year && c.HoldDate.Value.Month == month))
-                    .ToList();
+        public List<Check> GetChecksByMonth(YearMonthInfo paramInfo){
+            IQueryable<Check> query = _context.Checks;
+
+            if (paramInfo.ShouldFilterByBank){
+                query = query.Where(c => c.Bank.Id == paramInfo.BankId);
+            }
+
+            query = query.Where(
+                c =>
+                    (c.DateIssued.HasValue && c.HoldDate.HasValue == false &&
+                     c.DateIssued.Value.Year == paramInfo.Year &&
+                     c.DateIssued.Value.Month == paramInfo.Month)
+                    ||
+                    (c.HoldDate.HasValue && c.HoldDate.Value.Year == paramInfo.Year &&
+                     c.HoldDate.Value.Month == paramInfo.Month));
+
+            //query = ApplyCheckFlagQuery(query, paramInfo);
+
+            return query.ToList();
         }
+
+        //private IQueryable<Check> ApplyCheckFlagQuery(IQueryable<Check> query, YearMonthInfo param)
+        //{
+        //    IQueryable<Check> preQuery = query;
+
+        //    if (param.Flag == CheckFlag.Funded)
+        //    {
+        //        preQuery = query.Where(c => c.IsFunded && !c.IsSettled);
+        //    }
+        //    if (param.Flag == CheckFlag.NotFunded)
+        //    {
+        //        preQuery = query.Where(c => !c.IsFunded && !c.IsSettled);
+        //    }
+        //    if (param.Flag == CheckFlag.Settled)
+        //    {
+        //        preQuery = query.Where(c => c.IsSettled);
+        //    }
+
+        //    return preQuery;
+        //}
 
         public Check GetCheckByNumber(string checkNumber){
             return _context.Checks.FirstOrDefault(c => c.CheckNumber == checkNumber);
         }
 
         public List<Check> GetChecksByDateRange(DateTime from, DateTime to){
-            return
-                _context.Checks.Where(
-                    c => c.DateIssued.HasValue && c.DateIssued.Value >= from && c.DateIssued.Value <= to).ToList();
+            return GetChecksWithRange(from, to).ToList();
+        }
+
+        public List<Check> GetChecksByDateRangeWithBankId(DateTime from, DateTime to, long bankId){
+            return GetChecksWithRange(from, to).Where(c => c.Bank.Id == bankId).ToList();
+        }
+
+        private IQueryable<Check> GetChecksWithRange(DateTime from, DateTime to){
+            return _context.Checks.Where(
+                c =>
+                    (c.DateIssued.HasValue && c.HoldDate.HasValue == false &&
+                     c.DateIssued.Value >= from &&
+                     c.DateIssued.Value <= to)
+                    ||
+                    (c.HoldDate.HasValue && c.HoldDate.Value >= from &&
+                     c.HoldDate.Value <= to));
         }
 
         //The library Devart DotConnect for SQLite has minor bugs when arranging data with skip and take.
-        //Basically, what happens is order by is not being generated in SQL using Skip and take.
+        //Basically, what happens is 'Order By' is not being generated in SQL using Skip and take.
         //My work around is to create SQL by hand.
 
         public CheckPagingResult GetCheckWithPaging(CheckPagingRequest r)
