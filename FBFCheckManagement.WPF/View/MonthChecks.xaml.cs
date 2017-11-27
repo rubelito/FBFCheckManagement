@@ -339,8 +339,13 @@ namespace FBFCheckManagement.WPF.View
             saveFileDialog.Filter = "Excel Documents (*.xlsx)|*.xlsx";
             saveFileDialog.FileName = fileName;
             if (saveFileDialog.ShowDialog() == true){
-                ExportReport(param, saveFileDialog.FileName);
-                MessageBox.Show("Report Generated!");
+                try{
+                    ExportReport(param, saveFileDialog.FileName);
+                    MessageBox.Show("Report Generated!");
+                }
+                catch (Exception ex){
+                    MessageBox.Show(ex.Message, "Error Exporting Report");
+                }
             }
         }
 
