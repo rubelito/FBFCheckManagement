@@ -1,59 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using FBFCheckManagement.Application.Domain;
 using FBFCheckManagement.Application.DTO;
 using FBFCheckManagement.Application.Repository;
 using FBFCheckManagement.Application.Service;
-using FBFCheckManagement.WPF.HelperClass;
 using FBFCheckManagement.WPF.ViewModel;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Data;
 
 namespace FBFCheckManagement.WPF.View
 {
     /// <summary>
     /// Interaction logic for CheckMaintenance.xaml
     /// </summary>
-    public partial class CheckMaintenance : Window
+    public partial class CheckMaintenance
     {
         private CheckMaintenanceView _c;
+        private readonly IDepartmentRepository _deptRepository;
         private readonly IBankRepository _bankRepository;
         private readonly ICheckRepository _checkRepository;
+        private List<Department> _departments;
         private List<Bank> _banks;
 
-        public CheckMaintenance(IBankRepository bankRepository, ICheckRepository checkRepository){
+        public CheckMaintenance(IDepartmentRepository deptRepository, IBankRepository bankRepository,
+            ICheckRepository checkRepository){
+            _deptRepository = deptRepository;
             _bankRepository = bankRepository;
             _checkRepository = checkRepository;
 
             InitializeComponent();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
+        private void Window_Loaded(object sender, RoutedEventArgs e){
             _c = new CheckMaintenanceView();
-            
+
             DataPager.PageIndexChanged += DataPagerOnPageIndexChanged;
-            
+
             DataContext = _c;
-            LoadBanks();
-            SetCurrentItemForBanks();
+            LoadDepartment();
+            SetCurrentItemForDepartment();
             SetDefaultValuesOfModel();
-            
+
             DisplaySearch();
         }
 
@@ -62,26 +54,27 @@ namespace FBFCheckManagement.WPF.View
 
             _c.PagedChecks = CollectionViewSource.GetDefaultView(
                 new ObservableCollection<Check>(result.Results));
+            _c.PagedChecks.Refresh();
 
             DataPager.ItemCount = result.TotalItems;
             DataPager.MoveToFirstPage();
         }
 
-        private void LoadBanks(){
+        private void LoadDepartment(){
             try{
-                _banks = _bankRepository.GetAllBanks();
-                _banks.Insert(0, new Bank() { Id = 0, BankName = "All" });
-                _c.Banks = CollectionViewSource.GetDefaultView(
-                    new ObservableCollection<Bank>(_banks));
+                _departments = _deptRepository.GetAllDepartments();
+                _departments.Insert(0, new Department(){Id = 0, Name = "All"});
+                _c.Departments = CollectionViewSource.GetDefaultView(
+                    new ObservableCollection<Department>(_departments));
+                _c.HasSelectedDepartment = false;
             }
             catch (Exception ex){
-
                 MessageBox.Show(ex.Message);
             }
         }
 
-        private void SetCurrentItemForBanks(){
-            _c.SelectedBank = _banks[0];
+        private void SetCurrentItemForDepartment(){
+            _c.SelectedDepartment = _departments[0];
         }
 
         private CheckPagingResult Search(int currentPage, int pageSize){
@@ -102,7 +95,8 @@ namespace FBFCheckManagement.WPF.View
             SearchCriteria s = new SearchCriteria();
 
             s.CheckNumber = _c.CheckNumber;
-            s.SelectedBank = _c.SelectedBank.BankName != "All" ? _c.SelectedBank : null;
+            s.SelectedDepartment = _c.SelectedDepartment.Name != "All" ? _c.SelectedDepartment : null;
+            s.SelectedBank =  (_c.SelectedBank == null ||_c.SelectedBank.BankName != "All") ? _c.SelectedBank : null;
             s.AmountFrom = _c.AmountFrom;
             s.AmountTo = _c.AmountTo;
             s.IssuedDateFrom = _c.IssuedDateFrom;
@@ -122,12 +116,12 @@ namespace FBFCheckManagement.WPF.View
             var filteredItem = CollectionViewSource.GetDefaultView(
                 new ObservableCollection<Check>(result.Results));
             DataPager.ItemCount = result.TotalItems;
-            
+
             _c.PagedChecks = filteredItem;
         }
 
         private void SearchButton_OnClick(object sender, RoutedEventArgs e){
-            DisplaySearch();   
+            DisplaySearch();
         }
 
         private void ClearSearchButton_OnClick(object sender, RoutedEventArgs e){
@@ -137,7 +131,7 @@ namespace FBFCheckManagement.WPF.View
 
         private void SetDefaultValuesOfModel(){
             _c.CheckNumber = string.Empty;
-            _c.Banks.MoveCurrentToFirst();
+            _c.Departments.MoveCurrentToFirst();
             _c.AmountFrom = 0;
             _c.AmountTo = 0;
             _c.IssuedDateFrom = null;
@@ -169,14 +163,12 @@ namespace FBFCheckManagement.WPF.View
             }
         }
 
-        private void AddButton_OnClick(object sender, RoutedEventArgs e)
-        {
+        private void AddButton_OnClick(object sender, RoutedEventArgs e){
             AddEditCheckView addModel = new AddEditCheckView();
             addModel.Check = new Check();
             addModel.Operation = Operation.Add;
-            AddEditCheck addWindow = new AddEditCheck(addModel, _checkRepository);
-            addModel.Banks = _bankRepository.GetAllBanks();
-            
+            AddEditCheck addWindow = new AddEditCheck(addModel, _deptRepository, _bankRepository, _checkRepository);
+
             addWindow.ShowDialog();
 
             if (addWindow.IsCanceled == false){
@@ -184,25 +176,21 @@ namespace FBFCheckManagement.WPF.View
             }
         }
 
-        private void EditButton_OnClick(object sender, RoutedEventArgs e)
-        {
+        private void EditButton_OnClick(object sender, RoutedEventArgs e){
             AddEditCheckView editModel = new AddEditCheckView();
             editModel.CheckToEdit = _c.SelectedCheck.Id;
             editModel.Check = _c.SelectedCheck;
             editModel.Operation = Operation.Edit;
-            editModel.Banks = _bankRepository.GetAllBanks();
-            AddEditCheck addWindow = new AddEditCheck(editModel, _checkRepository);
+            AddEditCheck addWindow = new AddEditCheck(editModel, _deptRepository, _bankRepository, _checkRepository);
 
             addWindow.ShowDialog();
 
-            if (addWindow.IsCanceled == false)
-            {
+            if (addWindow.IsCanceled == false){
                 DisplaySearch();
             }
         }
 
-        private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
-        {
+        private void DeleteButton_OnClick(object sender, RoutedEventArgs e){
             var yesorno = MessageBox.Show("Are you sure do you want to Delete this record?", "Delete Record",
                 MessageBoxButton.YesNo);
             if (yesorno == MessageBoxResult.Yes){
@@ -211,6 +199,32 @@ namespace FBFCheckManagement.WPF.View
 
                 DisplaySearch();
             }
+        }
+
+        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e){
+            LoadBanks();
+        }
+
+        private void LoadBanks(){
+            var dept = _c.Departments.CurrentItem as Department;
+
+            if (dept != null && dept.Id != 0){
+                _banks = _bankRepository.GetBanksByDepartment(dept.Id);
+                _banks.Insert(0, new Bank(){Id = 0, BankName = "All"});
+                _c.Banks = CollectionViewSource.GetDefaultView(
+                    new ObservableCollection<Bank>(_banks));
+                SetCurrentItemForBanks();
+                _c.HasSelectedDepartment = true;
+            }
+            else{
+                _banks = new List<Bank>();
+                _c.Banks = null;
+                _c.HasSelectedDepartment = false;
+            }
+        }
+
+        private void SetCurrentItemForBanks(){
+            _c.SelectedBank = _banks[0];
         }
     }
 }

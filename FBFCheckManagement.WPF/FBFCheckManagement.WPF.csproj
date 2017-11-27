@@ -24,7 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -69,24 +69,32 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls, Version=2013.2.611.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for WPF Q2 2013\Binaries\WPF40\Telerik.Windows.Controls.dll</HintPath>
+    <Reference Include="Telerik.Windows.Controls, Version=2017.3.1018.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <HintPath>..\lib\RCWPF\2017.3.1018.45\Telerik.Windows.Controls.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls.Data, Version=2013.2.611.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for WPF Q2 2013\Binaries\WPF40\Telerik.Windows.Controls.Data.dll</HintPath>
+    <Reference Include="Telerik.Windows.Controls.Data, Version=2017.3.1018.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <HintPath>..\lib\RCWPF\2017.3.1018.45\Telerik.Windows.Controls.Data.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls.ScheduleView, Version=2013.2.611.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for WPF Q2 2013\Binaries\WPF40\Telerik.Windows.Controls.ScheduleView.dll</HintPath>
+    <Reference Include="Telerik.Windows.Controls.Input, Version=2017.3.1018.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <HintPath>..\lib\RCWPF\2017.3.1018.45\Telerik.Windows.Controls.Input.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Telerik.Windows.Data, Version=2013.2.611.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for WPF Q2 2013\Binaries\WPF40\Telerik.Windows.Data.dll</HintPath>
+    <Reference Include="Telerik.Windows.Controls.Navigation, Version=2017.3.1018.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <HintPath>..\lib\RCWPF\2017.3.1018.45\Telerik.Windows.Controls.Navigation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.ScheduleView, Version=2017.3.1018.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <HintPath>..\lib\RCWPF\2017.3.1018.45\Telerik.Windows.Controls.ScheduleView.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Data, Version=2017.3.1018.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <HintPath>..\lib\RCWPF\2017.3.1018.45\Telerik.Windows.Data.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.Windows.Themes.Office_Black">
-      <HintPath>..\packages\Telerik.Windows.Themes.Office_Black.dll</HintPath>
+      <HintPath>..\lib\RCWPF\2017.3.1018.45\Telerik.Windows.Themes.Office_Black.dll</HintPath>
     </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
@@ -122,6 +130,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Report\ReportExporter.cs" />
+    <Compile Include="Report\WeeklySummaryDrawer.cs" />
     <Compile Include="Report\WorkSheetMaker.cs" />
     <Compile Include="ViewModel\AddEditCheckView.cs" />
     <Compile Include="ViewModel\Enum1.cs" />

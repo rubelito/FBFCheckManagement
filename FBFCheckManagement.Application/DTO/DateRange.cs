@@ -6,10 +6,13 @@ namespace FBFCheckManagement.Application.DTO
     {
         public int Year { get; set; }
         public int Month { get; set; }
+        public bool ShouldFilterByDepartment { get; set; }
         public bool ShouldFilterByBank { get; set; }
         public bool ShouldFilterByStatus { get; set; }
 
+        public long DepartmentId { get; set; }
         public long BankId { get; set; }
+
         public CheckFlag Flag { get; set; }
     }
 }

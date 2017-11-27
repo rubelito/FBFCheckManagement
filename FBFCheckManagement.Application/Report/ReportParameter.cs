@@ -12,9 +12,27 @@ namespace FBFCheckManagement.Application.Report
         public DateTime Day { get; set; }
 
         public CheckFlag CheckFlag { get; set; }
-        
-        public bool ShouldFilterByBank { get; set; }
+
+        public long DepartmentId { get; set; }
         public int BankId { get; set; }
+
+        public bool ShouldFilterbyDepartment{
+            get{
+                if (DepartmentId != 0 && !ShouldFilterByBank)
+                    return true;
+                return false;
+            }
+        }
+
+        public bool ShouldFilterByBank{
+            get{
+                if (BankId != 0)
+                    return true;
+                return false;               
+            }
+        }
+
+        public string DepartmentName { get; set; }
         public string BankName { get; set; }
     }
 

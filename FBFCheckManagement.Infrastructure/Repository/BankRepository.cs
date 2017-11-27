@@ -11,27 +11,34 @@ namespace FBFCheckManagement.Infrastructure.Repository
     {
         private readonly FBFDbContext _context;
         private string _statusMessage = string.Empty;
-        private bool _isSuccess = false;
+        private bool _isSuccess;
 
-        public BankRepository(IDatabaseType databaseType)
-        {
+        public BankRepository(IDatabaseType databaseType){
             if (databaseType == null)
                 throw new ArgumentNullException("databaseType is null");
             _context = new FBFDbContext(databaseType);
         }
 
-        public void AddBank(Bank bank){
-            bool isExist = _context.Banks.Any(b => b.BankName == bank.BankName);
+        public void AddBank(long departmentId, Bank bank){
+            var parentDepartment = _context.Departments.FirstOrDefault(d => d.Id == departmentId);
+            if (parentDepartment != null){
+                bool isExist = parentDepartment.Banks.Any(b => b.BankName == bank.BankName);
 
-            if (isExist != true){
-                _context.Banks.Add(bank);
-                _context.SaveChanges();
-                _isSuccess = true;
-                _statusMessage = "success adding bank";
+                if (isExist != true){
+
+                    parentDepartment.Banks.Add(bank);
+                    _context.SaveChanges();
+                    _isSuccess = true;
+                    _statusMessage = "success adding bank";
+                }
+                else{
+                    _isSuccess = false;
+                    _statusMessage = "failed adding bank: bank already exist";
+                }
             }
             else{
                 _isSuccess = false;
-                _statusMessage = "failed adding bank: bank already exist";
+                _statusMessage = "failed adding bank: parent department does not exist";
             }
         }
 
@@ -39,17 +46,21 @@ namespace FBFCheckManagement.Infrastructure.Repository
             return _context.Banks.ToList();
         }
 
+        public List<Bank> GetBanksByDepartment(long departmentId){
+            return _context.Banks.Where(b => b.Department.Id == departmentId).ToList();
+        }
+
         public void EditBank(Bank bankToEdit){
             bool isExist = _context.Banks.Any(b => b.BankName == bankToEdit.BankName);
 
-            if (isExist == false)
-            {
-                Bank oldBank = _context.Banks.FirstOrDefault(b => b.Id == bankToEdit.Id);
+            if (isExist == false){
+                Bank oldBank = _context.Banks.Include("Department").FirstOrDefault(b => b.Id == bankToEdit.Id);
 
                 oldBank.BankName = bankToEdit.BankName;
                 oldBank.ModifiedDate = DateTime.Now;
-
+             
                 _context.SaveChanges();
+
                 _isSuccess = true;
                 _statusMessage = "success editing Bank";
             }
@@ -64,18 +75,14 @@ namespace FBFCheckManagement.Infrastructure.Repository
         }
 
         public Bank GetBankByName(string name){
-            return _context.Banks.FirstOrDefault(b => b.BankName == name); 
+            return _context.Banks.FirstOrDefault(b => b.BankName == name);
         }
 
-
-        public string StatusMessage
-        {
+        public string StatusMessage{
             get { return _statusMessage; }
         }
 
-
-        public bool IsSuccess
-        {
+        public bool IsSuccess{
             get { return _isSuccess; }
         }
     }

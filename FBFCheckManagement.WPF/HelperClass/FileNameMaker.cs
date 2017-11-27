@@ -13,6 +13,7 @@ namespace FBFCheckManagement.WPF.HelperClass
 
         public string GetFileName(){
             string checkFlag = Enum.GetName(_param.CheckFlag.GetType(), _param.CheckFlag);
+            string departmentName = _param.DepartmentName;
             string bankName = _param.BankName;
             string typeName = _param.Type == ReportType.Daily ? "Daily" : "Weekly";
 
@@ -20,7 +21,7 @@ namespace FBFCheckManagement.WPF.HelperClass
                 ? _param.Day.ToString("MMM dd, yyyy")
                 : _param.From.ToString("MMM dd, yyyy") + " - " + _param.To.ToString("MMM dd, yyyy");
 
-             return typeName + " " + bankName + " " + dateInFileName + " (" + checkFlag + ")";
+             return typeName + " " + departmentName + " " + bankName + " " + dateInFileName + " (" + checkFlag + ")";
         }
     }
 }

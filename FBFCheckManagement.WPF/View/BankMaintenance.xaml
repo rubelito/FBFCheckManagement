@@ -1,14 +1,33 @@
 ﻿<Window x:Class="FBFCheckManagement.WPF.View.BankMaintenance"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Bank Maintenance" Height="468" Width="390"
+        Title="Department &amp; Bank Maintenance" Height="301" Width="644"
         Icon="../SystemImage/Bank.png" WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded"
         >
     <Grid Background="LightGray" Margin="0,0,0,2">
-        <GroupBox Header="Bank" HorizontalAlignment="Left" VerticalAlignment="Top" Height="413" Width="348" Margin="10,10,0,0">
+
+        <GroupBox Header="Department" HorizontalAlignment="Left" VerticalAlignment="Top" Height="245" Width="303" Margin="7,5,0,0">
             <Grid>
-                <ListBox Name="BanksListBox" HorizontalAlignment="Left" Height="350" Margin="42,10,0,0" VerticalAlignment="Top" Width="255">
+                <ListBox Name="DepartmentListBox" HorizontalAlignment="Left" Height="161" Margin="25,13,0,0" VerticalAlignment="Top" Width="255" Grid.Column="1"
+                         SelectionChanged="DepartmentListBox_OnSelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,2">
+                                <TextBlock Text="{Binding Name}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+                <Button Name="dAdd" Content="Add" Click="DAdd_OnClick" HorizontalAlignment="Left" Margin="52,189,0,0" VerticalAlignment="Top" Width="75" Height="23" Grid.Column="1"/>
+                <Button Name="dEdit" Content="Edit" IsEnabled="{Binding ElementName=DepartmentListBox, Path=SelectedItems.Count}" Click="DEdit_OnClick" HorizontalAlignment="Left" Margin="165,189,0,0" VerticalAlignment="Top" Width="75" Height="23" Grid.Column="1" />
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Bank" HorizontalAlignment="Left" VerticalAlignment="Top" Height="245" Width="303" Margin="317,5,0,0">
+            <Grid>
+                <ListBox Name="BanksListBox" HorizontalAlignment="Left" Height="161" Margin="25,13,0,0" VerticalAlignment="Top" Width="255" Grid.Column="1">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="0,2">
@@ -18,18 +37,8 @@
                     </ListBox.ItemTemplate>
 
                 </ListBox>
-                <Button Name="add" Content="Add" HorizontalAlignment="Left" Margin="69,365,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="add_Click"/>
-                <Button Name="edit" Content="Edit" HorizontalAlignment="Left" Margin="182,365,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="edit_Click">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=ListBoxgroup, Path=SelectedItems.Count}" Value="0">
-                                    <Setter Property="Button.IsEnabled" Value="False"></Setter>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
+                <Button Name="add" Content="Add" IsEnabled="{Binding ElementName=DepartmentListBox, Path=SelectedItems.Count}" HorizontalAlignment="Left" Margin="52,189,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="add_Click" Grid.Column="1"/>
+                <Button Name="edit" Content="Edit" IsEnabled="{Binding ElementName=BanksListBox, Path=SelectedItems.Count}" HorizontalAlignment="Left" Margin="165,189,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="edit_Click" Grid.Column="1" />
             </Grid>
         </GroupBox>
     </Grid>

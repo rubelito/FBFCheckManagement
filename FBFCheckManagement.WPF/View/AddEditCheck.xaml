@@ -1,25 +1,30 @@
 ﻿<Window x:Class="FBFCheckManagement.WPF.View.AddEditCheck"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="AddEditCheck" Height="246.552" Width="561.478"
+        Title="AddEditCheck" Height="268.888" Width="561.478"
         WindowStyle="None" WindowStartupLocation="CenterScreen" ShowInTaskbar="False"
         Loaded="AddEditCheck_OnLoaded" ContentRendered="AddEditCheck_OnContentRendered" >
     <Grid Background="LightGray" Margin="0,0,0,2">
-        <GroupBox Header="{Binding Path=OperationMode}" Background="WhiteSmoke" HorizontalAlignment="Left" Margin="25,15,0,0" VerticalAlignment="Top" Height="153" Width="506">
+        <GroupBox Header="{Binding Path=OperationMode}" Background="WhiteSmoke" HorizontalAlignment="Left" Margin="25,15,0,0" VerticalAlignment="Top" Height="190" Width="506">
             <Grid Margin="12,10,-12,-10">
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="ID :" VerticalAlignment="Top" Margin="40,15,0,0"/>
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="{Binding Path=Check.Id}" VerticalAlignment="Top" Margin="63,15,0,0" Width="48"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="ID :" VerticalAlignment="Top" Margin="52,15,0,0"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="{Binding Path=Check.Id}" VerticalAlignment="Top" Margin="79,15,0,0" Width="48"/>
 
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Check # :" VerticalAlignment="Top" Margin="10,43,0,0" />
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Check # :" VerticalAlignment="Top" Margin="22,43,0,0" />
                 <TextBox Name="CheckNumText" Text="{Binding Path=Check.CheckNumber, Mode=OneWay}"  
-                         HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="63,36,0,0" Width="120"/>
+                         HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="79,36,0,0" Width="120"/>
 
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Bank :" VerticalAlignment="Top" Margin="26,74,0,0" />
-                <ComboBox Name="BankComboBox" ItemsSource="{Binding Banks, Mode=OneWay}" SelectedValue="{Binding Path=Check.Bank, Mode=OneWay}"
-					IsSynchronizedWithCurrentItem="True" DisplayMemberPath="BankName" HorizontalAlignment="Left" Margin="63,64,0,0" VerticalAlignment="Top" Width="120"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Department :" VerticalAlignment="Top" Margin="0,70,0,0" />
+                <ComboBox Name="DepartmentComboBox" ItemsSource="{Binding Departments}" SelectedValue="{Binding Path=SelectedDepartment}"
+					IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Name" HorizontalAlignment="Left" Margin="79,64,0,0" VerticalAlignment="Top" Width="120"                         
+                          SelectionChanged="DepartmentComboBox_OnSelectionChanged"/>
 
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Amount :" VerticalAlignment="Top" Margin="10,104,0,0" />
-                <TextBox Name="AmountText" Text="{Binding Path=Check.Amount, Mode=OneWay}" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" Margin="64,97,0,0" PreviewTextInput="UIElement_OnPreviewTextInput" LostFocus="UIElement_OnLostFocus" GotFocus="UIElement_OnGotFocus" />
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Bank :" VerticalAlignment="Top" Margin="37,107,0,0" />
+                <ComboBox Name="BankComboBox" ItemsSource="{Binding Banks}" SelectedValue="{Binding Path=SelectedBank}"
+					IsSynchronizedWithCurrentItem="True" DisplayMemberPath="BankName" HorizontalAlignment="Left" Margin="79,97,0,0" VerticalAlignment="Top" Width="120"/>
+
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Amount :" VerticalAlignment="Top" Margin="21,137,0,0" />
+                <TextBox Name="AmountText" Text="{Binding Path=Check.Amount, Mode=OneWay}" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" Margin="79,130,0,0" PreviewTextInput="UIElement_OnPreviewTextInput" LostFocus="UIElement_OnLostFocus" GotFocus="UIElement_OnGotFocus" />
 
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Issued To :" VerticalAlignment="Top" Margin="257,43,0,0" />
                 <TextBox Name="IssuedToTex" Text="{Binding Path=Check.IssuedTo, Mode=OneWay}" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" Margin="318,36,0,0" />
@@ -29,7 +34,7 @@
             </Grid>
         </GroupBox>
 
-        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="339,192,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="SaveButton_OnClick"/>
-        <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Left" Margin="431,192,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="CancelButton_OnClick"/>
+        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="340,220,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="SaveButton_OnClick"/>
+        <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Left" Margin="430,220,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="CancelButton_OnClick"/>
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using FBFCheckManagement.Application.Domain;
@@ -20,7 +21,8 @@ namespace FBFCheckManagement.WPF.HelperClass
                 a.IsFunded = c.IsFunded;               
                 a.IsSettled = c.IsSettled;
                 a.Start = c.HoldDate.HasValue ? c.HoldDate.Value : c.DateIssued.Value;
-                a.Subject = c.Bank.BankName + "- " + DecimalAmountToPhp.ConvertToCurrency(c.Amount);
+                a.Subject = c.CheckNumber + Environment.NewLine +
+                    c.Bank.BankName + "- " + DecimalAmountToPhp.ConvertToCurrency(c.Amount);
                 a.Notes = c.Notes;
                 
                 a.End = a.Start.AddHours(1);
@@ -43,7 +45,7 @@ namespace FBFCheckManagement.WPF.HelperClass
         public string ToolTip{
             get{
                 if (string.IsNullOrEmpty(Notes))
-                    return this.Subject;
+                    return Subject;
                 
                     return Notes;               
             }
@@ -54,7 +56,7 @@ namespace FBFCheckManagement.WPF.HelperClass
                 if (string.IsNullOrEmpty(Notes))
                     return FontStyles.Normal;
 
-                return FontStyles.Oblique;
+                return FontStyles.Italic;
             }
         }
 

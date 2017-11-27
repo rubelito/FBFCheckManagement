@@ -6,8 +6,9 @@ namespace FBFCheckManagement.Application.Repository
 {
     public interface IBankRepository
     {
-        void AddBank(Bank bank);
+        void AddBank(long departmentId, Bank bank);
         List<Bank> GetAllBanks();
+        List<Bank> GetBanksByDepartment(long departmentId);
         Bank GetBankById(int id);
         Bank GetBankByName(string name);
         void EditBank(Bank bankToEdit);

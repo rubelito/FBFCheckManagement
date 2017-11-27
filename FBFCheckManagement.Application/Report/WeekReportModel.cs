@@ -21,8 +21,8 @@ namespace FBFCheckManagement.Application.Report
 
         public List<DailyReportModel> DailyReports { get; set; }
 
-        public decimal Total {get { return DailyReports.Sum(d => d.TotalAmount); }}
-        public decimal Settled { get { return DailyReports.Sum(d => d.TotalSettledAmount); } }
-        public decimal Remaining { get { return DailyReports.Sum(d => d.TotalRemaining); } }
+        public decimal Total {get { return DailyReports.Where(d => !d.IsTotalForEntireWeek).Sum(d => d.TotalAmount); }}
+        public decimal Settled { get { return DailyReports.Where(d => !d.IsTotalForEntireWeek).Sum(d => d.TotalSettledAmount); } }
+        public decimal Remaining { get { return DailyReports.Where(d => !d.IsTotalForEntireWeek).Sum(d => d.TotalRemaining); } }
     }
 }

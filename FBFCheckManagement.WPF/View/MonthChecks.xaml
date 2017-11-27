@@ -16,28 +16,26 @@
                     <x:Type TypeName="dto:CheckFlag" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
-           
-        <telerik:OrientedAppointmentItemStyleSelector  x:Key="AppointmentItemStyleSelector">
-            <telerik:OrientedAppointmentItemStyleSelector.MonthViewStyle>
-                <Style TargetType="telerik:AppointmentItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Right"/>
-                    <Setter Property="Background"  Value="{Binding Appointment.BackColor}"/>
-                    <Setter Property="FontStyle" Value="{Binding Appointment.FontStyle}" />
-                    <Setter Property="FontWeight" Value="{Binding Appointment.FontWeight}" />
-                    <Setter Property="FontSize" Value="11.5" />
-                </Style>
-            </telerik:OrientedAppointmentItemStyleSelector.MonthViewStyle>
-        </telerik:OrientedAppointmentItemStyleSelector>
 
-        <telerik:OrientedGroupHeaderStyleSelector x:Key="GroupHeaderStyleSelector">
-                
-            <telerik:OrientedGroupHeaderStyleSelector.MonthViewBottomLevelWeekGroupStyle>
-                <Style TargetType="telerik:GroupHeader" BasedOn="{StaticResource MonthViewBottomLevelWeekGroupStyle}">
-                    <Setter Property="IsExpanded" Value="True" />                  
-                </Style>
-            </telerik:OrientedGroupHeaderStyleSelector.MonthViewBottomLevelWeekGroupStyle>
-        </telerik:OrientedGroupHeaderStyleSelector>
-
+            <telerik:OrientedAppointmentItemStyleSelector  x:Key="AppointmentItemStyleSelector">
+                <telerik:OrientedAppointmentItemStyleSelector.MonthViewStyle>
+                    <Style TargetType="telerik:AppointmentItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                        <Setter Property="Background"  Value="{Binding Appointment.BackColor}"/>
+                        <Setter Property="FontStyle" Value="{Binding Appointment.FontStyle}" />
+                        <Setter Property="FontWeight" Value="{Binding Appointment.FontWeight}" />
+                        <Setter Property="FontSize" Value="11.5" />
+                        <Setter Property="Height" Value="35"/>
+                    </Style>
+                </telerik:OrientedAppointmentItemStyleSelector.MonthViewStyle>
+            </telerik:OrientedAppointmentItemStyleSelector>
+            <telerik:OrientedGroupHeaderStyleSelector x:Key="GroupHeaderStyleSelector">
+                <telerik:OrientedGroupHeaderStyleSelector.MonthViewBottomLevelWeekGroupStyle>
+                    <Style TargetType="telerik:GroupHeader" BasedOn="{StaticResource MonthViewBottomLevelWeekGroupStyle}">
+                        <Setter Property="IsExpanded" Value="True" />
+                    </Style>
+                </telerik:OrientedGroupHeaderStyleSelector.MonthViewBottomLevelWeekGroupStyle>
+            </telerik:OrientedGroupHeaderStyleSelector>
             <DataTemplate x:Key="ToolTipTemplate">
                 <Grid>
                     <TextBlock Text="{Binding Appointment.ToolTip}" Width="207" 
@@ -55,33 +53,39 @@
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <telerik:RadScheduleView Name="ScheduleView" ShowDialog="ScheduleView_OnShowDialog" SelectedSlot="{Binding Path=SelectedDaySlot, Mode=TwoWay}" ToolTipTemplate="{StaticResource ToolTipTemplate}" 
-                                         VisibleRangeChanged="ScheduleView_VisibleRangeChanged" GroupHeaderStyleSelector="{StaticResource GroupHeaderStyleSelector}"
+                                         VisibleRangeChanged="ScheduleView_VisibleRangeChanged" 
+                                 GroupHeaderStyleSelector="{StaticResource GroupHeaderStyleSelector}"
                     AppointmentStyleSelector="{StaticResource AppointmentItemStyleSelector}" Margin="0,0,10,10">
             <telerik:RadScheduleView.ViewDefinitions>
-                <telerik:MonthViewDefinition VisibleDays="35" />
+                <telerik:MonthViewDefinition AllowCustomAppointmentSize="True" VisibleDays="35"/>           
             </telerik:RadScheduleView.ViewDefinitions>
             <telerik:RadScheduleView.DragDropBehavior>
                 <helperClass:ScheduleDragBehavior/>
             </telerik:RadScheduleView.DragDropBehavior>
         </telerik:RadScheduleView>
 
+
+        <ComboBox Name="DepartmentComboBox"
+					IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Name" HorizontalAlignment="Left" Margin="5,4,0,0" VerticalAlignment="Top" Width="120"
+                  SelectionChanged="DepartmentComboBox_OnSelectionChanged" DropDownOpened="DepartmentComboBox_OnDropDownOpened"/>
+
         <ComboBox Name="BankComboBox"
-					IsSynchronizedWithCurrentItem="True" DisplayMemberPath="BankName" HorizontalAlignment="Left" Margin="4,3,0,0" VerticalAlignment="Top" Width="120"
+					IsSynchronizedWithCurrentItem="True" DisplayMemberPath="BankName" HorizontalAlignment="Left" Margin="135,4,0,0" VerticalAlignment="Top" Width="120"
                   SelectionChanged="BankComboBox_OnSelectionChanged" DropDownOpened="BankComboBox_OnDropDownOpened"/>
 
         <ComboBox Name="CheckStatusComboBox" ItemsSource="{Binding Source={StaticResource CheckFlagProvider}}"
 				  SelectionChanged="CheckStatusComboBox_OnSelectionChanged" DropDownOpened="CheckStatusComboBox_OnDropDownOpened"
-                  SelectedIndex="0" HorizontalAlignment="Left" Margin="131,3,0,0" VerticalAlignment="Top" Width="120"/>
-        
+                  SelectedIndex="0" HorizontalAlignment="Left" Margin="265,4,0,0" VerticalAlignment="Top" Width="120"/>
+
         <Button x:Name="PrintDailyButton" Content="Daily" HorizontalAlignment="Left" 
-                Margin="293,3,0,0" VerticalAlignment="Top" Width="75" Height="23"
+                Margin="395,5,0,0" VerticalAlignment="Top" Width="75" Height="23"
                 IsEnabled="{Binding Path=SelectedDaySlot, TargetNullValue=False}"
                 Click="PrintDailyButton_OnClick" />
 
         <Button x:Name="WeeklyDailyButton" Content="Weekly" HorizontalAlignment="Left" 
-                Margin="375,3,0,0" VerticalAlignment="Top" Width="75" Height="23"
+                Margin="475,5,0,0" VerticalAlignment="Top" Width="75" Height="23"
                 IsEnabled="{Binding Path=SelectedDaySlot, TargetNullValue=False}"
-                Click="WeeklyDailyButton_OnClick"/>
+                Click="WeeklyDailyButton_OnClick" Grid.ColumnSpan="3"/>
 
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
         <GroupBox Header="Amounts" Grid.Column="2" Margin="10">

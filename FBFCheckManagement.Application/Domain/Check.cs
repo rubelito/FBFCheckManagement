@@ -13,7 +13,8 @@ namespace FBFCheckManagement.Application.Domain
         public string CheckNumber { get; set; }
 
         [Required]
-        public virtual Bank Bank { get; set; }
+        public virtual Bank Bank { get; set; }        
+
         public DateTime? DateIssued { get; set; }
         [Required]
         public string IssuedTo { get; set; }

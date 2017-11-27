@@ -14,7 +14,10 @@ namespace FBFCheckManagement.Application.Repository
         List<Check> GetChecksByMonth(YearMonthInfo paramInfo);
         Check GetCheckByNumber(string checkNumber);
         List<Check> GetChecksByDateRange(DateTime from, DateTime to);
+        List<Check> GetChecksByDateRangeWithDepartmentId(DateTime from, DateTime to, long deptId);
         List<Check> GetChecksByDateRangeWithBankId(DateTime from, DateTime to, long bankId);
-        CheckPagingResult GetCheckWithPaging(CheckPagingRequest request);     
+        CheckPagingResult GetCheckWithPaging(CheckPagingRequest request);
+        bool IsSuccess { get; }
+        string ErrorMessage { get; }
     }
 }

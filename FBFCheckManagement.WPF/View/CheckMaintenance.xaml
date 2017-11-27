@@ -5,7 +5,7 @@
         xmlns:converters="clr-namespace:FBFCheckManagement.WPF.Converters"
         xmlns:enum="clr-namespace:FBFCheckManagement.Application.DTO;assembly=FBFCheckManagement.Application"
         x:Class="FBFCheckManagement.WPF.View.CheckMaintenance"
-        Title="Check Maintenance" Height="662.807" Width="900.672" 
+        Title="Check Maintenance" Height="685.904" Width="900.672" 
         Loaded="Window_Loaded" WindowStartupLocation="CenterScreen"
         Icon="../SystemImage/BankCheck.png"
         >
@@ -15,28 +15,30 @@
     </Window.Resources>
 
     <Grid Background="LightGray" Margin="0,0,0,2">
-        <GroupBox Header="Search" Background="WhiteSmoke" HorizontalAlignment="Left" Margin="25,15,0,0" VerticalAlignment="Top" Height="181" Width="803">
+        <GroupBox Header="Search" Background="WhiteSmoke" HorizontalAlignment="Left" Margin="25,15,0,0" VerticalAlignment="Top" Height="205" Width="803">
             <Grid Margin="12,0,-12,0">
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Check # :" VerticalAlignment="Top" Margin="26,10,0,0"/>
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Bank :" VerticalAlignment="Top" Margin="43,43,0,0"/>
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Amount :" VerticalAlignment="Top" Margin="27,71,0,0"/>
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="To" VerticalAlignment="Top" Margin="206,64,0,0"/>
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Issued Date :" VerticalAlignment="Top" Margin="10,101,0,0"/>
-                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="To" VerticalAlignment="Top" Margin="208,97,0,0"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Check # :" VerticalAlignment="Top" Margin="31,10,0,0"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Department :" VerticalAlignment="Top" Margin="9,41,0,0"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Bank :" VerticalAlignment="Top" Margin="47,74,0,0"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Amount :" VerticalAlignment="Top" Margin="31,102,0,0"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="To" VerticalAlignment="Top" Margin="210,95,0,0"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Issued Date :" VerticalAlignment="Top" Margin="14,132,0,0"/>
+                <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="To" VerticalAlignment="Top" Margin="212,128,0,0"/>
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Issued To :" VerticalAlignment="Top" Margin="385,10,0,0"/>
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Created Date :" VerticalAlignment="Top" Margin="366,41,0,0"/>
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="To" VerticalAlignment="Top" Margin="571,35,0,0"/>
                 <TextBlock HorizontalAlignment="Left"  TextWrapping="Wrap" Text="Order By :" VerticalAlignment="Top" Margin="385,81,0,0"/>
 
-
-                <TextBox Text="{Binding CheckNumber}"  HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="79,3,0,0" Width="120"/>
+                <TextBox Text="{Binding CheckNumber}"  HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="85,3,0,0" Width="120"/>
+                <ComboBox ItemsSource="{Binding Departments}" SelectedValue="{Binding SelectedDepartment}" SelectionChanged="Selector_OnSelectionChanged"
+					IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Name" HorizontalAlignment="Left" Margin="85,31,0,0" VerticalAlignment="Top" Width="120"/>
                 <ComboBox ItemsSource="{Binding Banks}" SelectedValue="{Binding SelectedBank}"
-					IsSynchronizedWithCurrentItem="True" DisplayMemberPath="BankName" HorizontalAlignment="Left" Margin="80,31,0,0" VerticalAlignment="Top" Width="120"/>
-                <TextBox Text="{Binding AmountFrom}" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" Margin="81,64,0,0" PreviewTextInput="UIElement_OnPreviewTextInput" LostFocus="UIElement_OnLostFocus" GotFocus="UIElement_OnGotFocus" />
-                <TextBox Text="{Binding AmountTo}" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" Margin="224,64,0,0" PreviewTextInput="UIElement_OnPreviewTextInput" LostFocus="UIElement_OnLostFocus" GotFocus="UIElement_OnGotFocus"/>
+					IsSynchronizedWithCurrentItem="True" DisplayMemberPath="BankName" IsEnabled="{Binding Path=HasSelectedDepartment}" HorizontalAlignment="Left" Margin="84,62,0,0" VerticalAlignment="Top" Width="120"/>
+                <TextBox Text="{Binding AmountFrom}" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" Margin="85,95,0,0" PreviewTextInput="UIElement_OnPreviewTextInput" LostFocus="UIElement_OnLostFocus" GotFocus="UIElement_OnGotFocus" />
+                <TextBox Text="{Binding AmountTo}" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" Margin="228,95,0,0" PreviewTextInput="UIElement_OnPreviewTextInput" LostFocus="UIElement_OnLostFocus" GotFocus="UIElement_OnGotFocus"/>
 
-                <DatePicker SelectedDate="{Binding IssuedDateFrom}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="83,93,0,0" Width="120"/>
-                <DatePicker SelectedDate="{Binding IssuedDateTo}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="226,93,0,0" Width="120"/>
+                <DatePicker SelectedDate="{Binding IssuedDateFrom}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="87,124,0,0" Width="120"/>
+                <DatePicker SelectedDate="{Binding IssuedDateTo}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="230,124,0,0" Width="120"/>
 
                 <TextBox Text="{Binding IssuedTo}" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" Margin="446,0,0,0"/>
 
@@ -58,15 +60,15 @@
 					IsChecked="{Binding SelectedOrder, ConverterParameter={x:Static enum:OrderByArrangement.Ascending}, Converter={StaticResource enumBooleanConverter}}"
 					Content="Ascending"/>
 
-                <Button x:Name="ClearSearchButton" Content="Clear" HorizontalAlignment="Left" Margin="509,129,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="ClearSearchButton_OnClick"/>
-                <Button x:Name="SearchButton" Content="Search" HorizontalAlignment="Left" Margin="412,129,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="SearchButton_OnClick"/>
+                <Button x:Name="ClearSearchButton" Content="Clear" HorizontalAlignment="Left" Margin="512,149,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="ClearSearchButton_OnClick"/>
+                <Button x:Name="SearchButton" Content="Search" HorizontalAlignment="Left" Margin="415,149,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="SearchButton_OnClick"/>
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="Bank Checks" Background="WhiteSmoke" HorizontalAlignment="Left" Margin="25,234,0,0" VerticalAlignment="Top" Height="344" Width="803">
+        <GroupBox Header="Bank Checks" Background="WhiteSmoke" HorizontalAlignment="Left" Margin="25,261,0,0" VerticalAlignment="Top" Height="344" Width="803">
             <Grid>
                 <ListView x:Name="BankChecksView" ItemsSource="{Binding PagedChecks}"
-					SelectedValue="{Binding SelectedCheck}" IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Left" Height="297" SelectionMode="Single" Margin="10,10,0,0" VerticalAlignment="Top" Width="729">
+					SelectedValue="{Binding SelectedCheck}" IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Left" Height="297" SelectionMode="Single" Margin="10,10,0,0" VerticalAlignment="Top" Width="749">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -76,7 +78,8 @@
                         <GridView>
                             <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="30"/>
                             <GridViewColumn Header="Check #" DisplayMemberBinding="{Binding CheckNumber}" Width="120" />
-                            <GridViewColumn Header="Bank" DisplayMemberBinding="{Binding Bank.BankName}" Width="150"/>
+                            <GridViewColumn Header="Department" DisplayMemberBinding="{Binding Bank.Department.Name}" Width="100"/>
+                            <GridViewColumn Header="Bank" DisplayMemberBinding="{Binding Bank.BankName}" Width="100"/>
                             <GridViewColumn Width="95">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -94,11 +97,11 @@
                 </ListView>
             </Grid>
         </GroupBox>
-        <Button x:Name="AddButton" Content="Add" HorizontalAlignment="Left" Margin="30,597,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="AddButton_OnClick"/>
-        <Button x:Name="EditButton" IsEnabled="{Binding ElementName=BankChecksView, Path=SelectedItems.Count}" Content="Edit" HorizontalAlignment="Left" Margin="128,597,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="EditButton_OnClick"/>
-        <Button x:Name="DeleteButton" IsEnabled="{Binding ElementName=BankChecksView, Path=SelectedItems.Count}" Content="Delete" HorizontalAlignment="Left" Margin="696,598,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="DeleteButton_OnClick"/>
+        <Button x:Name="AddButton" Content="Add" HorizontalAlignment="Left" Margin="27,617,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="AddButton_OnClick"/>
+        <Button x:Name="EditButton" IsEnabled="{Binding ElementName=BankChecksView, Path=SelectedItems.Count}" Content="Edit" HorizontalAlignment="Left" Margin="125,617,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="EditButton_OnClick"/>
+        <Button x:Name="DeleteButton" IsEnabled="{Binding ElementName=BankChecksView, Path=SelectedItems.Count}" Content="Delete" HorizontalAlignment="Left" Margin="693,618,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="DeleteButton_OnClick"/>
 
-        <telerik:RadDataPager x:Name="DataPager" DisplayMode="All" PageSize="13" HorizontalAlignment="Left" Margin="25,201,0,0" VerticalAlignment="Top" Width="441"/>
+        <telerik:RadDataPager x:Name="DataPager" DisplayMode="All" PageSize="12" HorizontalAlignment="Left" Margin="25,232,0,0" VerticalAlignment="Top" Width="441"/>
 
     </Grid>
 </Window>

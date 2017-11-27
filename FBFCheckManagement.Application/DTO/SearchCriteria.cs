@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FBFCheckManagement.Application.Domain;
 
 namespace FBFCheckManagement.Application.DTO
@@ -11,6 +7,7 @@ namespace FBFCheckManagement.Application.DTO
     {
         public string CheckNumber { get; set; }
 
+        public Department SelectedDepartment { get; set; }
         public Bank SelectedBank { get; set; }
 
         public decimal AmountFrom { get; set; }
@@ -26,5 +23,10 @@ namespace FBFCheckManagement.Application.DTO
 
         public OrderByArrangement Order { get; set; }
         public OrderBy OrderBy { get; set; }
+
+        //This will only search for checks with a specific department
+        public bool ShouldJoinTable{
+            get { return SelectedDepartment != null && SelectedBank == null; }
+        }
     }
 }

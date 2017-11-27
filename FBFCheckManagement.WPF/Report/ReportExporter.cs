@@ -1,4 +1,5 @@
-﻿using ClosedXML.Excel;
+﻿using System.Linq;
+using ClosedXML.Excel;
 using FBFCheckManagement.Application.Report;
 
 namespace FBFCheckManagement.WPF.Report
@@ -18,7 +19,7 @@ namespace FBFCheckManagement.WPF.Report
             WorkSheetMaker maker = new WorkSheetMaker(workbookForSaving);
 
             maker.MakeWeeklySummary(report);
-            foreach (var daily in report.DailyReports){
+            foreach (var daily in report.DailyReports.Where(r => !r.IsTotalForEntireWeek)){
                 maker.Make(daily);
             }
 

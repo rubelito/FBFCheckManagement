@@ -1,26 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
+﻿using System.Configuration;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using FBFCheckManagement.Application.Domain;
-using FBFCheckManagement.Application.DTO;
-using FBFCheckManagement.Application.Report;
 using FBFCheckManagement.Application.Repository;
 using FBFCheckManagement.Infrastructure.EntityFramework;
 using FBFCheckManagement.Infrastructure.Repository;
 using FBFCheckManagement.WPF.HelperClass;
-using FBFCheckManagement.WPF.Report;
 
 namespace FBFCheckManagement.WPF.View
 {
@@ -51,48 +35,31 @@ namespace FBFCheckManagement.WPF.View
         }
 
         private void CheckButton_Click(object sender, RoutedEventArgs e){
+            IDepartmentRepository deptRepository = new DepartmentRepository(_dbType);
             IBankRepository bankRepository = new BankRepository(_dbType);
             ICheckRepository checkRepository = new CheckRepository(_dbType);
 
-            CheckMaintenance m = new CheckMaintenance(bankRepository, checkRepository);
+            CheckMaintenance m = new CheckMaintenance(deptRepository, bankRepository, checkRepository);
             m.ShowDialog();
         }
 
         private void BankButton_Click(object sender, RoutedEventArgs e)
         {
             IBankRepository bankRepository = new BankRepository(_dbType);
+            IDepartmentRepository deptRepository = new DepartmentRepository(_dbType);
 
-            BankMaintenance b = new BankMaintenance(bankRepository);
+            BankMaintenance b = new BankMaintenance(deptRepository, bankRepository);
             b.ShowDialog();
         }
 
         private void CheckAmountsButton_Click(object sender, RoutedEventArgs e)
         {
             ICheckRepository checkRepository = new CheckRepository(_dbType);
+            IDepartmentRepository deptRepository = new DepartmentRepository(_dbType);
             IBankRepository bankRepository = new BankRepository(_dbType);
 
-            MonthChecks m = new MonthChecks(checkRepository, bankRepository);
+            MonthChecks m = new MonthChecks(checkRepository, deptRepository, bankRepository);
             m.ShowDialog();
-        }
-
-        private void ReportButton_OnClick(object sender, RoutedEventArgs e){
-            IDatabaseType type = new EfSQLite("SQLiteDb");
-            IBankRepository bankRep = new BankRepository(type);
-            ICheckRepository checkRep = new CheckRepository(type);
-
-            ReportParameter param = new ReportParameter();
-            param.Type = ReportType.Weekly;
-            param.Day = new DateTime(2017, 11, 20);
-            param.ShouldFilterByBank = false;
-            param.BankId = 1;
-            param.From = new DateTime(2017, 11, 19);
-            param.To = new DateTime(2017, 11, 25);
-
-            ReportGenerator gen = new ReportGenerator(checkRep, bankRep);
-            WeekReportModel weekly = gen.GetWeekly(param);
-
-            ReportExporter reporter = new ReportExporter();
-            reporter.ExportWeeklyReport(weekly, @"C:\Users\Ruby\Desktop\NoFlag.xlsx");
         }
     }
 }

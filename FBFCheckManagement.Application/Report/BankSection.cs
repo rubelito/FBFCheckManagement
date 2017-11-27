@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using FBFCheckManagement.Application.Domain;
 using FBFCheckManagement.Application.DTO;
@@ -7,10 +8,11 @@ namespace FBFCheckManagement.Application.Report
 {
     public class BankSection
     {
-        private DailyReportModel _parentReport;
+        private readonly DepartmentSection _parentDepartment;
 
-        public BankSection(DailyReportModel parentReport){
-            _parentReport = parentReport;
+        public BankSection(DepartmentSection parentDepartment)
+        {
+            _parentDepartment = parentDepartment;
             Checks = new List<Check>();
         }
 
@@ -20,31 +22,31 @@ namespace FBFCheckManagement.Application.Report
             get{
                 List<Check> toDisplay = new List<Check>();
 
-                if (_parentReport.CheckFlag == CheckFlag.All){
+                if (_parentDepartment.ParentReport.CheckFlag == CheckFlag.All){
                     toDisplay = Checks;
                 }
-                if (_parentReport.CheckFlag == CheckFlag.NotFunded){
+                if (_parentDepartment.ParentReport.CheckFlag == CheckFlag.NotFunded){
                     toDisplay = Checks.Where(c => !c.IsFunded && !c.IsSettled).ToList();
                 }
-                if (_parentReport.CheckFlag == CheckFlag.Funded){
+                if (_parentDepartment.ParentReport.CheckFlag == CheckFlag.Funded){
                     toDisplay = Checks.Where(c => c.IsFunded && !c.IsSettled).ToList();
                 }
-                if (_parentReport.CheckFlag == CheckFlag.Settled){
+                if (_parentDepartment.ParentReport.CheckFlag == CheckFlag.Settled){
                     toDisplay = Checks.Where(c => c.IsSettled).ToList();
                 }
 
                 return toDisplay;
             }
-        } 
+        }
 
         public Bank Bank { get; set; }
 
-        public decimal TotalAmount{
+        public virtual decimal Amount{
             get { return Checks.Sum(c => c.Amount); }
         }
 
-        public decimal SettledAmount {get { return Checks.Where(c => c.IsSettled).Sum(c => c.Amount); }}
+        public virtual decimal SettledAmount {get { return Checks.Where(c => c.IsSettled).Sum(c => c.Amount); }}
 
-        public decimal RemainingAmount {get { return TotalAmount - SettledAmount; }}
+        public virtual decimal RemainingAmount {get { return Amount - SettledAmount; }}
     }
 }

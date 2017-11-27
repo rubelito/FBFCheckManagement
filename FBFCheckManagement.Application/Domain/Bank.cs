@@ -25,6 +25,9 @@ namespace FBFCheckManagement.Application.Domain
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
 
+        [Required]
+        public virtual Department Department { get; set; }
+
         public virtual List<Check> Checks { get { return _checks; } set { _checks = value; } } 
     }
 }

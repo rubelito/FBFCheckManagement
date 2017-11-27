@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using FBFCheckManagement.Application.Domain;
 using FBFCheckManagement.Application.DTO;
 using FBFCheckManagement.Application.Repository;
@@ -12,8 +13,10 @@ namespace FBFCheckManagement.Infrastructure.Repository
     {
         private readonly FBFDbContext _context;
 
-        public CheckRepository(IDatabaseType databaseType)
-        {
+        private bool _isSuccess;
+        private string _errorMessage = string.Empty;
+
+        public CheckRepository(IDatabaseType databaseType){
             if (databaseType == null)
                 throw new ArgumentNullException("databaseType is null");
             _context = new FBFDbContext(databaseType);
@@ -21,9 +24,19 @@ namespace FBFCheckManagement.Infrastructure.Repository
 
         public void Add(Check check){
             Bank b = _context.Banks.FirstOrDefault(f => f.Id == check.Bank.Id);
-            check.Bank = b;
-            _context.Checks.Add(check);
-            _context.SaveChanges();
+            bool isExist = b.Checks.Any(c => c.CheckNumber == check.CheckNumber);
+
+            if (isExist){
+                _isSuccess = false;
+                _errorMessage = "Cannot Add Check: Check number " + check.CheckNumber + " already exist in " +
+                                b.BankName;
+            }
+            else{
+                check.Bank = b;
+                _context.Checks.Add(check);
+                _context.SaveChanges();
+                _isSuccess = true;
+            }
         }
 
         public void Update(Check check){
@@ -31,12 +44,14 @@ namespace FBFCheckManagement.Infrastructure.Repository
 
             oldCheck.CheckNumber = check.CheckNumber;
             oldCheck.Amount = check.Amount;
-            oldCheck.Bank = _context.Banks.FirstOrDefault(b => b.Id == check.Bank.Id);           
+            oldCheck.Bank = _context.Banks.FirstOrDefault(b => b.Id == check.Bank.Id);
             oldCheck.IssuedTo = check.IssuedTo;
             oldCheck.DateIssued = check.DateIssued;
             oldCheck.ModifiedDate = check.ModifiedDate;
 
             _context.SaveChanges();
+
+            _isSuccess = true;
         }
 
         public void Delete(long id){
@@ -51,6 +66,10 @@ namespace FBFCheckManagement.Infrastructure.Repository
 
         public List<Check> GetChecksByMonth(YearMonthInfo paramInfo){
             IQueryable<Check> query = _context.Checks;
+
+            if (paramInfo.ShouldFilterByDepartment){
+                query = query.Where(c => c.Bank.Department.Id == paramInfo.DepartmentId);
+            }
 
             if (paramInfo.ShouldFilterByBank){
                 query = query.Where(c => c.Bank.Id == paramInfo.BankId);
@@ -98,6 +117,10 @@ namespace FBFCheckManagement.Infrastructure.Repository
             return GetChecksWithRange(from, to).ToList();
         }
 
+        public List<Check> GetChecksByDateRangeWithDepartmentId(DateTime from, DateTime to, long deptId){
+            return GetChecksWithRange(from, to).Where(c => c.Bank.Department.Id == deptId).ToList();
+        }
+
         public List<Check> GetChecksByDateRangeWithBankId(DateTime from, DateTime to, long bankId){
             return GetChecksWithRange(from, to).Where(c => c.Bank.Id == bankId).ToList();
         }
@@ -117,23 +140,36 @@ namespace FBFCheckManagement.Infrastructure.Repository
         //Basically, what happens is 'Order By' is not being generated in SQL using Skip and take.
         //My work around is to create SQL by hand.
 
-        public CheckPagingResult GetCheckWithPaging(CheckPagingRequest r)
-        {
+        public CheckPagingResult GetCheckWithPaging(CheckPagingRequest r){
             CheckPagingResult result = new CheckPagingResult();
             string query = "Select * From Checks";
-            string queryForCount = "Select Count(Id) From Checks";
+            string queryForCount = "Select Count(Checks.Id) From Checks";
+
+            query = AddRelation(r, query);
+            queryForCount = AddRelation(r, queryForCount);
 
             queryForCount = BuildCondition(r, queryForCount);
 
-            result.TotalItems = _context.Database.SqlQuery<int>(queryForCount).First();            
+            result.TotalItems = _context.Database.SqlQuery<int>(queryForCount).First();
             query = BuildCondition(r, query);
             query = BuildOrderBy(r, query);
             query = BuildPagination(r, query);
-            
+
             result.Results = _context.Checks.SqlQuery(query).ToList();
             result.PageCount = result.TotalItems/r.PageSize;
 
             return result;
+        }
+
+        private string AddRelation(CheckPagingRequest r, string query){
+            SearchCriteria s = r.SearchCriteria;
+            if (s.ShouldJoinTable){
+                string partialQuery = string.Empty;
+                partialQuery = query + " Inner join Banks on Checks.Bank_Id = Banks.Id";
+                query = partialQuery + " Inner join Departments on Banks.Department_Id = Departments.Id";
+            }
+
+            return query;
         }
 
         private string BuildCondition(CheckPagingRequest r, string query){
@@ -149,11 +185,11 @@ namespace FBFCheckManagement.Infrastructure.Repository
                     shouldIncludeWhere);
                 shouldIncludeWhere = false;
             }
-            if (s.IssuedDateFrom.HasValue && s.IssuedDateTo.HasValue)
-            {
+            if (s.IssuedDateFrom.HasValue && s.IssuedDateTo.HasValue){
                 DateTime addOneDay = s.IssuedDateTo.Value.AddDays(1);
                 query = BuildWhereClause(query, "DateIssued", "Between",
-                    "'" + s.IssuedDateFrom.Value.ToString("yyyy-MM-dd") + "' And '" + addOneDay.ToString("yyyy-MM-dd") + "'",
+                    "'" + s.IssuedDateFrom.Value.ToString("yyyy-MM-dd") + "' And '" + addOneDay.ToString("yyyy-MM-dd") +
+                    "'",
                     shouldIncludeWhere);
                 shouldIncludeWhere = false;
             }
@@ -167,19 +203,24 @@ namespace FBFCheckManagement.Infrastructure.Repository
                     shouldIncludeWhere);
                 shouldIncludeWhere = false;
             }
-            if (s.CreatedDateFrom.HasValue && s.CreatedDateTo.HasValue)
-            {
+            if (s.CreatedDateFrom.HasValue && s.CreatedDateTo.HasValue){
                 DateTime addOneDay = s.CreatedDateTo.Value.AddDays(1);
                 query = BuildWhereClause(query, "CreatedDate", "Between",
-                    "'" + s.CreatedDateFrom.Value.ToString("yyyy-MM-dd") + "' And '" + addOneDay.ToString("yyyy-MM-dd") + "'",
+                    "'" + s.CreatedDateFrom.Value.ToString("yyyy-MM-dd") + "' And '" + addOneDay.ToString("yyyy-MM-dd") +
+                    "'",
+                    shouldIncludeWhere);
+                shouldIncludeWhere = false;
+            }
+            if (s.ShouldJoinTable){
+                query = BuildWhereClause(query, "Departments.Id", "=", Convert.ToString(s.SelectedDepartment.Id),
                     shouldIncludeWhere);
             }
 
             return query;
         }
 
-        private string BuildWhereClause(string query, string columnName,  
-            string operation, string condition,bool shoulIncludeWhere){
+        private string BuildWhereClause(string query, string columnName,
+            string operation, string condition, bool shoulIncludeWhere){
             if (shoulIncludeWhere){
                 query += " Where " + columnName + " " + operation + " " + condition;
             }
@@ -193,19 +234,19 @@ namespace FBFCheckManagement.Infrastructure.Repository
         private string BuildOrderBy(CheckPagingRequest r, string query){
 
             SearchCriteria s = r.SearchCriteria;
-            if (s.OrderBy == Application.DTO.OrderBy.CreatedDate){
+            if (s.OrderBy == OrderBy.CreatedDate){
                 query = BuildOrderClause("CreatedDate", s.Order, query);
             }
-            else if (s.OrderBy == Application.DTO.OrderBy.IssuedDate){
+            else if (s.OrderBy == OrderBy.IssuedDate){
                 query = BuildOrderClause("DateIssued", s.Order, query);
             }
-            else if (s.OrderBy == Application.DTO.OrderBy.Amount){
+            else if (s.OrderBy == OrderBy.Amount){
                 query = BuildOrderClause("Amount", s.Order, query);
             }
-            else if (s.OrderBy == Application.DTO.OrderBy.CheckNumber){
+            else if (s.OrderBy == OrderBy.CheckNumber){
                 query = BuildOrderClause("CheckNumber", s.Order, query);
             }
-            else if (s.OrderBy == Application.DTO.OrderBy.IssuedTo){
+            else if (s.OrderBy == OrderBy.IssuedTo){
                 query = BuildOrderClause("IssuedTo", s.Order, query);
             }
 
@@ -225,6 +266,14 @@ namespace FBFCheckManagement.Infrastructure.Repository
 
         private string BuildPagination(CheckPagingRequest r, string query){
             return query + " LIMIT " + r.PageSize + " OFFSET " + r.CurrentPage*r.PageSize;
+        }
+
+        public bool IsSuccess{
+            get { return _isSuccess; }
+        }
+
+        public string ErrorMessage{
+            get { return _errorMessage; }
         }
     }
 }

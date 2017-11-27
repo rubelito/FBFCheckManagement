@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using FBFCheckManagement.Application.Domain;
 using FBFCheckManagement.Application.DTO;
 using FBFCheckManagement.WPF.HelperClass;
@@ -18,7 +15,26 @@ namespace FBFCheckManagement.WPF.ViewModel
         private string _checkNumber;
         public string CheckNumber { get { return _checkNumber; } set { SetProperty(ref _checkNumber, value); } }
 
-        public ICollectionView Banks { get; set; }
+        public ICollectionView Departments { get; set; }
+
+        private ICollectionView _banks;
+        public ICollectionView Banks { get { return _banks; } set { SetProperty(ref _banks, value); } }
+
+        private bool _hasSelectedDepartment;
+        public bool HasSelectedDepartment
+        {
+            get { return _hasSelectedDepartment; }
+            set
+            {
+                SetProperty(ref _hasSelectedDepartment, value);
+            }
+        }
+
+
+        private Department _selectedDepartment;
+        public Department SelectedDepartment {get { return _selectedDepartment; } set{
+            SetProperty(ref _selectedDepartment, value);
+        }}
 
         private Bank _selectedBank;
         public Bank SelectedBank { get { return _selectedBank; } set { SetProperty(ref _selectedBank, value); } }

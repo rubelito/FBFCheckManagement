@@ -24,6 +24,7 @@ namespace FBFCheckManagement.WPF.View
     public partial class MonthChecks
     {
         private readonly ICheckRepository _checkRepository;
+        private readonly IDepartmentRepository _deptRepository;
         private readonly IBankRepository _bankRepository;
 
         private List<Check> _checksInLastMonth;
@@ -41,8 +42,10 @@ namespace FBFCheckManagement.WPF.View
 
         private ScheduleViewModel _model;
 
-        public MonthChecks(ICheckRepository checkRepository, IBankRepository bankRepository){
+        public MonthChecks(ICheckRepository checkRepository, IDepartmentRepository deptRepository,
+            IBankRepository bankRepository){
             _checkRepository = checkRepository;
+            _deptRepository = deptRepository;
             _bankRepository = bankRepository;
             InitializeComponent();
             _model = new ScheduleViewModel();
@@ -55,17 +58,18 @@ namespace FBFCheckManagement.WPF.View
         }
 
         private void MonthChecks_OnContentRendered(object sender, EventArgs e){
-            LoadBanks();
+            LoadDepartments();
             SetRangeOfWeeks();
             LoadChecks(ScheduleView.CurrentDate);
+            HighlightNextAndPreviousMonth(ScheduleView.CurrentDate);
             ComputeChecksAmountsPerWeek();
             DataContext = _model;
         }
 
-        private void LoadBanks(){
-            List<Bank> banks = _bankRepository.GetAllBanks();
-            banks.Insert(0, new Bank(){Id = 0, BankName = "All"});
-            BankComboBox.ItemsSource = banks;
+        private void LoadDepartments(){
+            List<Department> depts = _deptRepository.GetAllDepartments();
+            depts.Insert(0, new Department(){Id = 0, Name = "All"});
+            DepartmentComboBox.ItemsSource = depts;
         }
 
         private void LoadChecks(DateTime currentDate){
@@ -121,8 +125,17 @@ namespace FBFCheckManagement.WPF.View
             i.ShouldFilterByStatus = false;
 
             Bank selectedBank = BankComboBox.SelectedValue as Bank;
+            Department selectedDept = DepartmentComboBox.SelectedValue as Department;
 
-            if (selectedBank.BankName == "All"){
+            if (selectedDept.Name == "All"){
+                i.ShouldFilterByDepartment = false;
+            }
+            else{
+                i.ShouldFilterByDepartment = true;
+                i.DepartmentId = selectedDept.Id;
+            }
+
+            if (selectedBank == null || selectedBank.BankName == "All"){
                 i.ShouldFilterByBank = false;
             }
             else{
@@ -304,15 +317,16 @@ namespace FBFCheckManagement.WPF.View
             DateTime to = day.GetLastDayOfWeek();
 
             CheckFlag selectedFlag = (CheckFlag) CheckStatusComboBox.SelectedItem;
+            Department selectedDepartment = (DepartmentComboBox.SelectedItem as Department);
             Bank selectedBank = (BankComboBox.SelectedItem as Bank);
-            bool shouldFilterByBank = selectedBank.Id != 0;
 
             ReportParameter param = new ReportParameter(){
                 Type = type,
                 CheckFlag = selectedFlag,
+                DepartmentId = selectedDepartment.Id,
                 BankId = (int) selectedBank.Id,
+                DepartmentName = selectedDepartment.Name,
                 BankName = selectedBank.BankName,
-                ShouldFilterByBank = shouldFilterByBank,
                 Day = day,
                 From = from,
                 To = to
@@ -326,12 +340,13 @@ namespace FBFCheckManagement.WPF.View
             saveFileDialog.FileName = fileName;
             if (saveFileDialog.ShowDialog() == true){
                 ExportReport(param, saveFileDialog.FileName);
+                MessageBox.Show("Report Generated!");
             }
         }
 
         private void ExportReport(ReportParameter param, string fileName){
             ReportExporter exporter = new ReportExporter();
-            ReportGenerator gen = new ReportGenerator(_checkRepository, _bankRepository);
+            ReportGenerator gen = new ReportGenerator(_checkRepository, _deptRepository, _bankRepository);
 
             if (param.Type == ReportType.Daily){
                 var dailyReportModel = gen.GetDaily(param);
@@ -340,6 +355,32 @@ namespace FBFCheckManagement.WPF.View
             if (param.Type == ReportType.Weekly){
                 var weeklyReportModel = gen.GetWeekly(param);
                 exporter.ExportWeeklyReport(weeklyReportModel, fileName);
+            }
+        }
+
+        private void DepartmentComboBox_OnDropDownOpened(object sender, EventArgs e){
+            _isUserChangeComboBox = true;
+        }
+
+        private void DepartmentComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e){
+            LoadBanks();
+            QueryDataWhenSelectionChange();
+        }
+
+        private void LoadBanks(){
+            var dept = DepartmentComboBox.SelectedItem as Department;
+            List<Bank> banks = new List<Bank>();
+            banks.Insert(0, new Bank() { Id = 0, BankName = "All" });
+
+            if (dept != null && dept.Id != 0){
+                BankComboBox.IsEnabled = true;
+                banks.AddRange(_bankRepository.GetBanksByDepartment(dept.Id));
+                BankComboBox.ItemsSource = banks;
+            }
+            else{
+
+                BankComboBox.ItemsSource = banks;
+                BankComboBox.IsEnabled = false;
             }
         }
     }
