@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Documents;
 using ClosedXML.Excel;
 using FBFCheckManagement.Application.Domain;
@@ -27,13 +28,31 @@ namespace FBFCheckManagement.WPF.Report
             CreateCoverdDateSection(report);
 
             CreateSectionPerDay(report.DailyReports);
-
-            CreateSummaryGrandTotalAmountSection(report); 
+            CreateSummaryGrandTotalAmountSection(report);
+            DrawLedger();
             SetAutoAdjustToWeekSummaryContent();
             
             return _summarySheet;
         }
 
+        private void DrawLedger(){
+            _indexOfSummaryTotal = _indexOfSummaryTotal + 2;
+
+            DrawLedgerRow("Unsettled/Unfunded", XLColor.White);
+            DrawLedgerRow("Settled", XLColor.LightGreen);
+            DrawLedgerRow("Funded", XLColor.Orange);
+            DrawLedgerRow("On Hold", XLColor.OrangeRed);
+        }
+
+        private void DrawLedgerRow(string meaning, XLColor color){
+            _indexOfSummaryTotal++;
+            var valueCell = _summarySheet.Cell(_indexOfSummaryTotal, 1);
+            valueCell.Style.Fill.BackgroundColor = color;
+            valueCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            var valueMeaning = _summarySheet.Cell(_indexOfSummaryTotal, 2);
+            valueMeaning.Value = meaning;
+        }
+   
         private void CreateCoverdDateSection(WeekReportModel report){
 
             var coveredDate = _summarySheet.Cell(_summaryRowIndex, _summaryColumnIndex);
@@ -169,7 +188,7 @@ namespace FBFCheckManagement.WPF.Report
         private void CreateDepartmentSection(DepartmentSection sec){
             _currentRowIndex = _currentRowIndex + 2;
             CreateDepartmentLabel(sec);
-            foreach (var bSection in sec.BankSections){
+            foreach (var bSection in sec.BankSections.Where(b => !b.IsTotalPerDay)){
                 int initialRowInderForBorder = _currentRowIndex;
                 CreateBankSection(bSection);               
                 CreateBorder(initialRowInderForBorder, _currentRowIndex);
@@ -244,9 +263,6 @@ namespace FBFCheckManagement.WPF.Report
             }
             else if (check.IsOnHold){
                 cell.Style.Fill.BackgroundColor = XLColor.OrangeRed;
-            }
-            else{
-                cell.Style.Fill.BackgroundColor = XLColor.LightBlue;
             }
         }
 

@@ -83,7 +83,7 @@ namespace FBFCheckManagement.WPF.HelperClass
                     color = new SolidColorBrush(Colors.OrangeRed);
                 }
                 else{
-                    color = new SolidColorBrush(Colors.LightBlue);
+                    color = new SolidColorBrush(Colors.White);
                 }
 
                 return color;

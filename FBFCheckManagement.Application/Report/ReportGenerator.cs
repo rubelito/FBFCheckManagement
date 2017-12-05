@@ -78,8 +78,11 @@ namespace FBFCheckManagement.Application.Report
 
                         deptSection.BankSections.Add(bankSection);
                     }
+                    //This will add total at the bottom.
+                    DayTotal total = new DayTotal(deptSection);
+                    total.Bank = new Bank(){Id = 0, BankName = "Total"};
+                    deptSection.BankSections.Add(total);
                 }
-
 
         public WeekReportModel GetWeekly(ReportParameter param){
             List<DateTime> daysInWeek = GenerateTheDaysWithinThisRange(param.From, param.To);
@@ -111,9 +114,16 @@ namespace FBFCheckManagement.Application.Report
                 totalForDay.SectionsPerDepartment.Add(totalForDepartment);
 
                 foreach (var bank in dept.BankSections){
-                    var totalForBank = new WeekTotalForBank(totalForDepartment);
-                    totalForBank.Bank = bank.Bank;
-                    totalForDepartment.BankSections.Add(totalForBank);
+                    if (bank.IsTotalPerDay){
+                        var totalForBank = new DayTotal(totalForDepartment);
+                        totalForBank.Bank = new Bank(){Id = 0, BankName = "Sub Total"};
+                        totalForDepartment.BankSections.Add(totalForBank);
+                    }
+                    else{
+                        var totalForBank = new WeekTotalForBank(totalForDepartment);
+                        totalForBank.Bank = bank.Bank;
+                        totalForDepartment.BankSections.Add(totalForBank);
+                    }                  
                 }               
             }
           

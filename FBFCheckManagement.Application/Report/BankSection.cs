@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 using FBFCheckManagement.Application.Domain;
 using FBFCheckManagement.Application.DTO;
@@ -13,6 +12,7 @@ namespace FBFCheckManagement.Application.Report
         public BankSection(DepartmentSection parentDepartment)
         {
             _parentDepartment = parentDepartment;
+            
             Checks = new List<Check>();
         }
 
@@ -38,6 +38,8 @@ namespace FBFCheckManagement.Application.Report
                 return toDisplay;
             }
         }
+
+        public bool IsTotalPerDay { get; set; }
 
         public Bank Bank { get; set; }
 

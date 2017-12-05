@@ -53,6 +53,7 @@
     <Compile Include="Helper\DateHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Report\BankSection.cs" />
+    <Compile Include="Report\DayTotal.cs" />
     <Compile Include="Report\DepartmentSection.cs" />
     <Compile Include="Report\ReportGenerator.cs" />
     <Compile Include="Report\DailyReportModel.cs" />

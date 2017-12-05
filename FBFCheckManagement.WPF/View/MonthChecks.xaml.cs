@@ -383,7 +383,6 @@ namespace FBFCheckManagement.WPF.View
                 BankComboBox.ItemsSource = banks;
             }
             else{
-
                 BankComboBox.ItemsSource = banks;
                 BankComboBox.IsEnabled = false;
             }
